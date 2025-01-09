@@ -1,4 +1,4 @@
-# Prize Picks by Prize Picks
+# Romeloquan by Prize Picks
 ## Roster
 * Jackie Zeng - PM, flask routing, db lead, minesweeper, snake, word hunt 
 * Wen Yuan Zhang - User Auth, connect 4, Front-end
