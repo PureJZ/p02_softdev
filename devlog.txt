@@ -1,0 +1,5 @@
+jackieZ -- 12/2/2024 21:18
+- Uploaded design doc pdf
+- Clarified leaderboard for each game
+- Added Team Name/Project Name
+- Updated database chart to reflect new leaderboard system and update component map and site map to be white 
