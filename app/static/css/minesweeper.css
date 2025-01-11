@@ -1,19 +1,54 @@
-body {
-    font-family: Arial, sans-serif;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  body {
     background-color: #fafafa;
+    font-family: Arial, sans-serif;
     color: #333;
-    margin: 20px;
+  }
+  
+  /* Flex container to center content both vertically and horizontally */
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
   }
   
   h2 {
     margin-bottom: 10px;
   }
   
-  #gameBoard {
-    width: max-content;
-    margin: 20px 0;
+  p {
+    margin-bottom: 20px;
   }
   
+  #resetBtn {
+    background-color: #4285f4;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+  }
+  
+  #resetBtn:hover {
+    background-color: #3367d6;
+  }
+  
+  #gameBoard {
+    width: max-content;
+  }
+  
+  /* Game cells */
   .cell {
     width: 30px;
     height: 30px;
@@ -35,20 +70,5 @@ body {
   .cell.mine {
     background-color: #e00;
     color: #fff;
-  }
-  
-  #resetBtn {
-    background-color: #4285f4;
-    color: #fff;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  #resetBtn:hover {
-    background-color: #3367d6;
   }
   
