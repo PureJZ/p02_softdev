@@ -13,13 +13,9 @@ def get_db_connection():
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
 
-@app.route('/')
+@app.route("/")
 def home():
-    """
-    If the user is logged in, show a welcome message and a logout link.
-    Otherwise, show links to sign up or log in.
-    """
-    return render_template('home.html')
+    return render_template("home.html")
 
 # -------------------------
 # SIGNUP

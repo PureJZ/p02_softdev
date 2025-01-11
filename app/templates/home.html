@@ -3,34 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <title>Home</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white shadow p-4">
-      <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 class="text-xl font-bold">Flask App</h1>
-        <div>
+
+    <nav class="bg-white shadow">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-gray-800">Flask App</h1>
+        <div class="space-x-4">
           {% if 'user_id' in session %}
-            <span class="mr-4">Hi, {{ session.username }}!</span>
+            <span class="text-gray-700">Hi, {{ session.username }}!</span>
             <a
               href="{{ url_for('logout') }}"
-              class="text-red-500 hover:text-red-700 underline"
+              class="text-red-600 hover:text-red-700 underline"
             >
               Logout
             </a>
           {% else %}
             <a
               href="{{ url_for('signup') }}"
-              class="text-blue-500 hover:text-blue-700 underline mr-4"
+              class="text-blue-600 hover:text-blue-800 underline"
             >
               Sign Up
             </a>
             <a
               href="{{ url_for('login') }}"
-              class="text-blue-500 hover:text-blue-700 underline"
+              class="text-blue-600 hover:text-blue-800 underline"
             >
               Login
             </a>
@@ -40,19 +39,29 @@
     </nav>
 
 
-    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Welcome to the Home Page</h2>
+    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow-md">
+      <h2 class="text-3xl font-semibold mb-4 text-gray-800">Welcome to the Home Page</h2>
 
       {% if 'user_id' in session %}
-        <p class="mb-4">You are logged in as <strong>{{ session.username }}</strong>.</p>
-        <p>Here’s some content only logged-in users can see...</p>
+        <p class="mb-4 text-gray-700">
+          You are logged in as <strong class="font-medium">{{ session.username }}</strong>.
+        </p>
+        <p class="text-gray-600">
+          Here’s some content only logged-in users can see! Customize this section to
+          show anything relevant to your application.
+        </p>
       {% else %}
-        <p class="mb-4">You are not logged in.</p>
-        <p>
+        <p class="mb-4 text-gray-700">You are not logged in.</p>
+        <p class="text-gray-600">
           You can
-          <a href="{{ url_for('signup') }}" class="text-blue-500 underline">Sign Up</a>
+          <a href="{{ url_for('signup') }}" class="text-blue-600 underline hover:text-blue-800">
+            Sign Up
+          </a>
           or
-          <a href="{{ url_for('login') }}" class="text-blue-500 underline">Log In</a>.
+          <a href="{{ url_for('login') }}" class="text-blue-600 underline hover:text-blue-800">
+            Log In
+          </a>
+          to access more features.
         </p>
       {% endif %}
     </div>
