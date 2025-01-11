@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, request, session, redirect, url_for, render_template
+from flask import Flask, request, session, redirect, url_for, render_template, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db_scripts.setup_db import init_db
@@ -17,18 +17,53 @@ app.secret_key = os.urandom(16)
 def home():
     return render_template("home.html")
 
-# -------------------------
-# SIGNUP
-# -------------------------
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'GET':
-        return render_template('signup.html')
+        return render_template('login.html')
     else:
         username = request.form.get('username')
         password = request.form.get('password')
         if not username or not password:
-            return "Missing username or password", 400
+
+            flash("Missing username or password.", "error")
+            return redirect(url_for('login'))
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, username, password_hash FROM users WHERE username = ?", (username,))
+        user = cur.fetchone()
+        conn.close()
+
+        if user is None:
+
+            flash("Invalid username or password.", "error")
+            return redirect(url_for('login'))
+
+        stored_hash = user['password_hash']
+        if not check_password_hash(stored_hash, password):
+            flash("Invalid username or password.", "error")
+            return redirect(url_for('login'))
+
+        session['user_id'] = user['id']
+        session['username'] = user['username']
+        flash(f"Welcome back, {username}!", "success")
+        return redirect(url_for('home'))
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'GET':
+
+        return render_template('signup.html')
+    else:
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+
+        if not username or not password:
+            flash("Missing username or password.", "error")
+            return redirect(url_for('signup'))
 
         hashed_pw = generate_password_hash(password)
 
@@ -40,49 +75,17 @@ def signup():
             conn.commit()
         except sqlite3.IntegrityError:
             conn.close()
-            return "User already exists. Please choose a different username.", 400
+            flash("User already exists. Please choose a different username.", "error")
+            return redirect(url_for('signup'))
 
         conn.close()
+        flash("Registration successful! Please log in.", "success")
         return redirect(url_for('login'))
-
-# -------------------------
-# LOGIN
-# -------------------------
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    else:
-        username = request.form.get('username')
-        password = request.form.get('password')
-        if not username or not password:
-            return "Missing username or password", 400
-
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT id, username, password_hash FROM users WHERE username = ?", (username,))
-        user = cur.fetchone()
-        conn.close()
-
-        if user is None:
-            return "Invalid username or password", 400
-
-        stored_hash = user['password_hash']
-        if not check_password_hash(stored_hash, password):
-            return "Invalid username or password", 400
-        session['user_id'] = user['id']
-        session['username'] = user['username']
-        return redirect(url_for('home'))
-
-# -------------------------
-# LOGOUT
-# -------------------------
+    
 @app.route('/logout')
 def logout():
-    """
-    Clear the session and redirect to home.
-    """
     session.clear()
+    flash("You have been logged out.", "info")
     return redirect(url_for('home'))
 
 
