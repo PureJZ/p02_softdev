@@ -1,19 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Home</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <h1>Welcome to the Home Page</h1>
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow p-4">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">Flask App</h1>
+        <div>
+          {% if 'user_id' in session %}
+            <span class="mr-4">Hi, {{ session.username }}!</span>
+            <a
+              href="{{ url_for('logout') }}"
+              class="text-red-500 hover:text-red-700 underline"
+            >
+              Logout
+            </a>
+          {% else %}
+            <a
+              href="{{ url_for('signup') }}"
+              class="text-blue-500 hover:text-blue-700 underline mr-4"
+            >
+              Sign Up
+            </a>
+            <a
+              href="{{ url_for('login') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Login
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
 
-    {% if 'user_id' in session %}
-      <p>Logged in as {{ session.username }}.</p>
-      <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-      <p>You are not logged in.</p>
-      <a href="{{ url_for('signup') }}">Sign Up</a> |
-      <a href="{{ url_for('login') }}">Log In</a>
-    {% endif %}
+
+    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Welcome to the Home Page</h2>
+
+      {% if 'user_id' in session %}
+        <p class="mb-4">You are logged in as <strong>{{ session.username }}</strong>.</p>
+        <p>Here’s some content only logged-in users can see...</p>
+      {% else %}
+        <p class="mb-4">You are not logged in.</p>
+        <p>
+          You can
+          <a href="{{ url_for('signup') }}" class="text-blue-500 underline">Sign Up</a>
+          or
+          <a href="{{ url_for('login') }}" class="text-blue-500 underline">Log In</a>.
+        </p>
+      {% endif %}
+    </div>
   </body>
 </html>

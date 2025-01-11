@@ -3,16 +3,15 @@ import sqlite3
 from flask import Flask, request, session, redirect, url_for, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from db_scripts.setup_db import init_db 
+from db_scripts.setup_db import init_db
 
 def get_db_connection():
     conn = sqlite3.connect('app.db')
-    conn.row_factory = sqlite3.Row
+    conn.row_factory = sqlite3.Row  
     return conn
 
 app = Flask(__name__)
-
-app.secret_key = "DEV_ONLY__change_me_in_production"
+app.secret_key = os.urandom(16)
 
 @app.route('/')
 def home():
@@ -34,11 +33,13 @@ def signup():
         password = request.form.get('password')
         if not username or not password:
             return "Missing username or password", 400
+
         hashed_pw = generate_password_hash(password)
+
         conn = get_db_connection()
         cur = conn.cursor()
         try:
-            cur.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", 
+            cur.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
                         (username, hashed_pw))
             conn.commit()
         except sqlite3.IntegrityError:
@@ -87,7 +88,6 @@ def logout():
     """
     session.clear()
     return redirect(url_for('home'))
-
 
 
 @app.route('/minesweeper')
