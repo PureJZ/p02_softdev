@@ -5,13 +5,12 @@ const numMines = 10;
 let board = [];
 let isGameOver = false;
 
-const gameBoard = document.getElementById("gameBoard");
-const resetBtn = document.getElementById("resetBtn");
+const resetBtn = document.getElementById('resetBtn');
+const gameBoard = document.getElementById('gameBoard');
 
 function initializeBoard() {
   isGameOver = false;
   board = [];
-
   for (let i = 0; i < numRows; i++) {
     board[i] = [];
     for (let j = 0; j < numCols; j++) {
@@ -42,10 +41,8 @@ function initializeBoard() {
             const ni = i + dx;
             const nj = j + dy;
             if (
-              ni >= 0 &&
-              ni < numRows &&
-              nj >= 0 &&
-              nj < numCols &&
+              ni >= 0 && ni < numRows &&
+              nj >= 0 && nj < numCols &&
               board[ni][nj].isMine
             ) {
               count++;
@@ -59,14 +56,10 @@ function initializeBoard() {
 }
 
 function revealCell(row, col) {
-  if (isGameOver) {
-    return;
-  }
+  if (isGameOver) return;
   if (
-    row < 0 ||
-    row >= numRows ||
-    col < 0 ||
-    col >= numCols ||
+    row < 0 || row >= numRows ||
+    col < 0 || col >= numCols ||
     board[row][col].revealed
   ) {
     return;
@@ -75,7 +68,7 @@ function revealCell(row, col) {
   board[row][col].revealed = true;
 
   if (board[row][col].isMine) {
-    alert("Game Over! You stepped on a mine.");
+    alert('Game Over! You stepped on a mine.');
     isGameOver = true;
     revealAll();
     return;
@@ -93,27 +86,23 @@ function revealCell(row, col) {
 }
 
 function renderBoard() {
-  gameBoard.innerHTML = "";
-
+  gameBoard.innerHTML = '';
   for (let i = 0; i < numRows; i++) {
     for (let j = 0; j < numCols; j++) {
-      const cell = document.createElement("div");
-      cell.className = "cell";
-
+      const cellDiv = document.createElement('div');
+      cellDiv.classList.add('cell');
       if (board[i][j].revealed) {
-        cell.classList.add("revealed");
+        cellDiv.classList.add('revealed');
         if (board[i][j].isMine) {
-          cell.classList.add("mine");
-          cell.textContent = "💣";
+          cellDiv.classList.add('mine');
+          cellDiv.textContent = '💣';
         } else if (board[i][j].count > 0) {
-          cell.textContent = board[i][j].count;
+          cellDiv.textContent = board[i][j].count;
         }
       }
-
-      cell.addEventListener("click", () => revealCell(i, j));
-      gameBoard.appendChild(cell);
+      cellDiv.addEventListener('click', () => revealCell(i, j));
+      gameBoard.appendChild(cellDiv);
     }
-    gameBoard.appendChild(document.createElement("br"));
   }
 }
 
@@ -126,7 +115,7 @@ function revealAll() {
   renderBoard();
 }
 
-resetBtn.addEventListener("click", function() {
+resetBtn.addEventListener('click', () => {
   initializeBoard();
   renderBoard();
 });

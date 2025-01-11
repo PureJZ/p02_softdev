@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}My Flask App{% endblock title %}</title>
+  {% block head %}{% endblock head %}
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <header class="bg-gray-900 text-white p-4">
+    <nav class="container mx-auto flex justify-between items-center">
+      <div class="font-bold text-xl">My Flask App</div>
+      <ul class="flex gap-4">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('minesweeper') }}">Minesweeper</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container mx-auto py-6">
+    {% block content %}
+    {% endblock content %}
+  </main>
+
+  <footer class="bg-gray-200 text-center py-4">
+    <p>© 2025 Romeloquan. All rights reserved.</p>
+  </footer>
+
+  {% block scripts %}
+  {% endblock scripts %}
+</body>
+</html>

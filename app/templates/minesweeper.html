@@ -1,21 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Minesweeper</title>
-  <link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/minesweeper.css') }}"
+{% extends "base.html" %}
+
+{% block title %}
+Minesweeper | My Flask App
+{% endblock title %}
+
+{% block head %}
+
+<link
+  href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css"
+  rel="stylesheet"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/minesweeper.css') }}"
+>
+{% endblock head %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-screen">
+  <h2 class="text-2xl font-bold mb-2">Minesweeper</h2>
+  <p class="mb-4">Click the cells to reveal safe spots and avoid the mines.</p>
+  <button
+    id="resetBtn"
+    class="bg-blue-600 text-white px-4 py-2 rounded mb-4 hover:bg-blue-800 focus:outline-none"
   >
-</head>
-<body>
+    Reset Game
+  </button>
+  <div
+    id="gameBoard"
+    class="grid grid-cols-8 gap-1"
+  ></div>
+</div>
+{% endblock content %}
 
-  <h2>Minesweeper</h2>
-  <div id="gameBoard"></div>
-  <button id="resetBtn">Reset Game</button>
-
-  <script
-    src="{{ url_for('static', filename='js/minesweeper.js') }}"
-  ></script>
-</body>
-</html>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/minesweeper.js') }}"></script>
+{% endblock scripts %}
