@@ -1,76 +1,92 @@
-import sqlite3
 import os
-from flask import Flask, render_template, request, session, redirect, jsonify
+import sqlite3
+from flask import Flask, request, session, redirect, url_for, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
-from db_scripts.setup_db import init_db
+
+from db_scripts.setup_db import init_db 
 
 def get_db_connection():
-    """
-    Returns a connection to the SQLite database.
-    """
     conn = sqlite3.connect('app.db')
-    conn.row_factory = sqlite3.Row  
+    conn.row_factory = sqlite3.Row
     return conn
-
 
 app = Flask(__name__)
 
+app.secret_key = "DEV_ONLY__change_me_in_production"
+
 @app.route('/')
 def home():
-    return render_template('home.html') 
+    """
+    If the user is logged in, show a welcome message and a logout link.
+    Otherwise, show links to sign up or log in.
+    """
+    return render_template('home.html')
 
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({"error": "Invalid request data"}), 400
-
-    username = data['username']
-    password = data['password']
-    password_hash = generate_password_hash(password) 
-
-    try:
+# -------------------------
+# SIGNUP
+# -------------------------
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'GET':
+        return render_template('signup.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if not username or not password:
+            return "Missing username or password", 400
+        hashed_pw = generate_password_hash(password)
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
-                    (username, password_hash))
-        conn.commit()
+        try:
+            cur.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", 
+                        (username, hashed_pw))
+            conn.commit()
+        except sqlite3.IntegrityError:
+            conn.close()
+            return "User already exists. Please choose a different username.", 400
+
         conn.close()
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "User already exists"}), 400
+        return redirect(url_for('login'))
 
-    return jsonify({"message": "User registered successfully"}), 201
-
-@app.route('/login', methods=['POST'])
+# -------------------------
+# LOGIN
+# -------------------------
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.get_json()
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({"error": "Invalid request data"}), 400
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if not username or not password:
+            return "Missing username or password", 400
 
-    username = data['username']
-    password = data['password']
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, username, password_hash FROM users WHERE username = ?", (username,))
+        user = cur.fetchone()
+        conn.close()
 
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT id, username, password_hash FROM users WHERE username = ?", (username,))
-    user = cur.fetchone()
-    conn.close()
+        if user is None:
+            return "Invalid username or password", 400
 
-    if user is None:
-        return jsonify({"error": "Invalid username or password"}), 400
+        stored_hash = user['password_hash']
+        if not check_password_hash(stored_hash, password):
+            return "Invalid username or password", 400
+        session['user_id'] = user['id']
+        session['username'] = user['username']
+        return redirect(url_for('home'))
 
-    stored_hash = user['password_hash']
-    if not check_password_hash(stored_hash, password):
-        return jsonify({"error": "Invalid username or password"}), 400
-
-    session['user_id'] = user['id']
-    session['username'] = user['username']
-    return jsonify({"message": "Logged in successfully"}), 200
-
-@app.route('/logout', methods=['POST'])
+# -------------------------
+# LOGOUT
+# -------------------------
+@app.route('/logout')
 def logout():
+    """
+    Clear the session and redirect to home.
+    """
     session.clear()
-    return jsonify({"message": "Logged out successfully"}), 200
+    return redirect(url_for('home'))
 
 
 
@@ -80,6 +96,7 @@ def minesweeper():
 
 
 if __name__ == "__main__":
+    init_db()
     app.debug = True
     app.run()
 
