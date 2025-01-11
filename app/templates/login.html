@@ -7,31 +7,44 @@
   </head>
   <body class="bg-gray-100">
     <nav class="bg-white shadow p-4 mb-4">
-      <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 class="text-xl font-bold text-gray-800">Romeloquan</h1>
-        <div class="space-x-4">
-          <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-gray-900 underline">
-            Home
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+          <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
+            Romeloquan
           </a>
-          {% if 'user_id' in session %}
-            <span class="text-gray-600">Hi, {{ session.username }}!</span>
-            <a href="{{ url_for('logout') }}" class="text-red-500 hover:text-red-700 underline">
-              Logout
+      
+          <div class="space-x-4">
+            {% if 'user_id' in session %}
+              <span class="text-gray-600">Hi, {{ session.username }}!</span>
+              <a
+                href="{{ url_for('logout') }}"
+                class="text-red-500 hover:text-red-700 underline"
+              >
+                Logout
+              </a>
+            {% else %}
+              <a
+                href="{{ url_for('signup') }}"
+                class="text-blue-500 hover:text-blue-700 underline"
+              >
+                Sign Up
+              </a>
+              <a
+                href="{{ url_for('login') }}"
+                class="text-blue-500 hover:text-blue-700 underline"
+              >
+                Login
+              </a>
+            {% endif %}
+            <a
+              href="{{ url_for('minesweeper') }}"
+              class="text-gray-700 hover:text-gray-900 underline"
+            >
+              Minesweeper
             </a>
-          {% else %}
-            <a href="{{ url_for('signup') }}" class="text-blue-500 hover:text-blue-700 underline">
-              Sign Up
-            </a>
-            <a href="{{ url_for('login') }}" class="text-blue-500 hover:text-blue-700 underline">
-              Login
-            </a>
-          {% endif %}
-          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">
-            Minesweeper
-          </a>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+      
 
     <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded shadow-md">
       {% with messages = get_flashed_messages(with_categories=true) %}
