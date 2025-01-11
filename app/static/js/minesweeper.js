@@ -26,10 +26,7 @@ function placeMines(firstRow, firstCol) {
   while (minesPlaced < numMines) {
     const row = Math.floor(Math.random() * numRows);
     const col = Math.floor(Math.random() * numCols);
-    if (
-      !board[row][col].isMine &&
-      !(row === firstRow && col === firstCol)
-    ) {
+    if (!board[row][col].isMine && !(row === firstRow && col === firstCol)) {
       board[row][col].isMine = true;
       minesPlaced++;
     }
@@ -121,6 +118,7 @@ function checkWin() {
   }
   const totalNonMines = numRows * numCols - numMines;
   if (revealedCount === totalNonMines) {
+    launchConfetti();
     alert("You win!");
     isGameOver = true;
     revealAll();
@@ -161,6 +159,24 @@ function revealAll() {
     }
   }
   renderBoard();
+}
+
+function launchConfetti() {
+  const end = Date.now() + 3000;
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      startVelocity: 30,
+      spread: 360,
+      origin: {
+        x: Math.random(),
+        y: Math.random() - 0.2
+      }
+    });
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
