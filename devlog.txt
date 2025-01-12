@@ -1,5 +1,14 @@
-jackieZ -- 12/2/2024 21:18
+jackieZ -- 1/2/2024 21:18
 - Uploaded design doc pdf
 - Clarified leaderboard for each game
 - Added Team Name/Project Name
 - Updated database chart to reflect new leaderboard system and update component map and site map to be white 
+
+jackieZ -- 1/11/2024 23:20
+- Added login/logout/register
+- Added minesweeper page
+- Added navbar
+- Added minesweeper js code
+- Fix minesweeper start and win logic
+- Fix confetti for win
+- Added restart game
