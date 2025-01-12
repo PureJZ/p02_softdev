@@ -16,7 +16,7 @@ function createEmptyBoard() {
         isMine: false,
         revealed: false,
         flagged: false,
-        count: 0
+        count: 0,
       };
     }
   }
@@ -27,7 +27,10 @@ function placeMines(firstRow, firstCol) {
   while (minesPlaced < numMines) {
     const row = Math.floor(Math.random() * numRows);
     const col = Math.floor(Math.random() * numCols);
-    if (!board[row][col].isMine && !(row === firstRow && col === firstCol)) {
+    if (
+      !board[row][col].isMine &&
+      (Math.abs(row - firstRow) > 1 || Math.abs(col - firstCol) > 1)
+    ) {
       board[row][col].isMine = true;
       minesPlaced++;
     }
@@ -78,18 +81,27 @@ function revealCell(row, col) {
   ) {
     return;
   }
+
   if (isFirstMove) {
     placeMines(row, col);
     calculateAdjacentCounts();
     isFirstMove = false;
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        revealCell(row + dx, col + dy);
+      }
+    }
   }
+
   board[row][col].revealed = true;
+
   if (board[row][col].isMine) {
     alert("Game Over! You stepped on a mine.");
     isGameOver = true;
     revealAll();
     return;
   }
+
   if (board[row][col].count === 0) {
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
@@ -97,6 +109,7 @@ function revealCell(row, col) {
       }
     }
   }
+
   renderBoard();
   checkWin();
 }
@@ -127,7 +140,7 @@ function renderBoard() {
         cellDiv.textContent = "🚩";
       }
       cellDiv.addEventListener("click", () => revealCell(i, j));
-      cellDiv.addEventListener("contextmenu", e => {
+      cellDiv.addEventListener("contextmenu", (e) => {
         e.preventDefault();
         toggleFlag(i, j);
       });
@@ -146,7 +159,7 @@ function revealAll() {
 }
 
 function launchConfetti() {
-  const end = Date.now() + 5000; 
+  const end = Date.now() + 2500;
   (function frame() {
     confetti({
       particleCount: 7,
@@ -202,5 +215,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeBoard();
     renderBoard();
     resetGameMessage();
-  });  
+  });
 });
