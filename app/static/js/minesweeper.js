@@ -146,21 +146,27 @@ function revealAll() {
 }
 
 function launchConfetti() {
-  const end = Date.now() + 2500;
+  const end = Date.now() + 5000; 
   (function frame() {
     confetti({
-      particleCount: 5,
+      particleCount: 7,
       startVelocity: 30,
       spread: 360,
       origin: {
         x: Math.random(),
-        y: Math.random() - 0.2
-      }
+        y: Math.random() - 0.2,
+      },
     });
     if (Date.now() < end) {
       requestAnimationFrame(frame);
     }
   })();
+}
+
+function resetGameMessage() {
+  const gameMessage = document.getElementById("gameMessage");
+  gameMessage.textContent = "";
+  gameMessage.classList.add("hidden");
 }
 
 function checkWin() {
@@ -180,7 +186,8 @@ function checkWin() {
   const totalNonMines = numRows * numCols - numMines;
   if (revealedNonMines === totalNonMines || correctFlags === numMines) {
     launchConfetti();
-    alert("You win!");
+    document.getElementById("gameMessage").textContent = "You Win! 🎉";
+    document.getElementById("gameMessage").classList.remove("hidden");
     isGameOver = true;
     revealAll();
   }
@@ -194,5 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", () => {
     initializeBoard();
     renderBoard();
-  });
+    resetGameMessage();
+  });  
 });
