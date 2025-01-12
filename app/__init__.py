@@ -93,6 +93,9 @@ def logout():
 def minesweeper():
     return render_template('minesweeper.html')
 
+@app.route('/wordhunt')
+def wordhunt():
+    return render_template('wordhunt.html')
 
 if __name__ == "__main__":
     init_db()
