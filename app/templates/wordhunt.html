@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Word Hunt</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      #gameBoard {
+        display: grid;
+        grid-template-columns: repeat(4, 60px);
+        gap: 0;
+        margin-top: 1rem;
+      }
+      .cell {
+        width: 60px;
+        height: 60px;
+        border: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .cell.selected {
+        background-color: lightblue;
+      }
+      .found-word {
+        padding: 0.5rem 0;
+        font-size: 1rem;
+        color: #4a5568;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow p-4 mb-4">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-gray-800">Romeloquan</a>
+        <div class="space-x-4">
+          {% if 'user_id' in session %}
+            <span class="text-gray-600">Hi, {{ session.username }}!</span>
+            <a
+              href="{{ url_for('logout') }}"
+              class="text-red-500 hover:text-red-700 underline"
+            >
+              Logout
+            </a>
+          {% else %}
+            <a
+              href="{{ url_for('signup') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Sign Up
+            </a>
+            <a
+              href="{{ url_for('login') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Login
+            </a>
+          {% endif %}
+          <a
+            href="{{ url_for('wordhunt') }}"
+            class="text-gray-700 hover:text-gray-900 underline"
+          >
+            Word Hunt
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="max-w-xl mx-auto bg-white p-8 rounded shadow-md">
+      <h2 class="text-2xl font-bold mb-4">Word Hunt Game</h2>
+      <p class="text-gray-700 mb-4">
+        Connect adjacent letters to form words. Drag to select letters, then submit to check if your word is valid!
+      </p>
+      <div class="flex space-x-4 mb-4">
+        <button
+          id="submitWord"
+          class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 font-semibold"
+        >
+          Submit Word
+        </button>
+        <button
+          id="resetBtn"
+          class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold"
+        >
+          New Game
+        </button>
+      </div>
+      <div id="gameBoard"></div>
+      <div id="gameMessage" class="text-center text-red-500 font-semibold mt-4"></div>
+      <h3 class="text-xl font-bold mt-6">Found Words</h3>
+      <div id="foundWords" class="bg-gray-100 p-4 rounded shadow-inner"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/wordhunt.js') }}"></script>
+  </body>
+</html>
