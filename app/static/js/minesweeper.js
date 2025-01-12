@@ -22,14 +22,11 @@ function createEmptyBoard() {
   }
 }
 
-// Here we exclude the cell the user clicked (firstRow, firstCol)
-// from having a mine, guaranteeing the first click is safe.
 function placeMines(firstRow, firstCol) {
   let minesPlaced = 0;
   while (minesPlaced < numMines) {
     const row = Math.floor(Math.random() * numRows);
     const col = Math.floor(Math.random() * numCols);
-    // Ensure we don't place a mine on the first-clicked cell
     if (!board[row][col].isMine && !(row === firstRow && col === firstCol)) {
       board[row][col].isMine = true;
       minesPlaced++;
@@ -69,10 +66,6 @@ function initializeBoard() {
   createEmptyBoard();
 }
 
-// The reveal function
-// 1. If it's the very first click => place mines anywhere *except* this cell
-// 2. If flagged or out of bounds or revealed, ignore
-// 3. Reveal the cell; if mine => game over; if count=0 => reveal neighbors
 function revealCell(row, col) {
   if (isGameOver) return;
   if (
@@ -108,31 +101,12 @@ function revealCell(row, col) {
   checkWin();
 }
 
-// Toggle flagged state on right-click
 function toggleFlag(row, col) {
   if (isGameOver) return;
   if (board[row][col].revealed) return;
   board[row][col].flagged = !board[row][col].flagged;
   renderBoard();
-}
-
-// Win detection: if all non-mine cells are revealed
-function checkWin() {
-  let revealedCount = 0;
-  for (let i = 0; i < numRows; i++) {
-    for (let j = 0; j < numCols; j++) {
-      if (!board[i][j].isMine && board[i][j].revealed) {
-        revealedCount++;
-      }
-    }
-  }
-  const totalNonMines = numRows * numCols - numMines;
-  if (revealedCount === totalNonMines) {
-    launchConfetti(); // Optional if you want a win animation
-    alert("You win!");
-    isGameOver = true;
-    revealAll();
-  }
+  checkWin();
 }
 
 function renderBoard() {
@@ -171,7 +145,6 @@ function revealAll() {
   renderBoard();
 }
 
-// Optional confetti for a win
 function launchConfetti() {
   const end = Date.now() + 2500;
   (function frame() {
@@ -188,6 +161,29 @@ function launchConfetti() {
       requestAnimationFrame(frame);
     }
   })();
+}
+
+function checkWin() {
+  let revealedNonMines = 0;
+  let correctFlags = 0;
+  for (let i = 0; i < numRows; i++) {
+    for (let j = 0; j < numCols; j++) {
+      const cell = board[i][j];
+      if (!cell.isMine && cell.revealed) {
+        revealedNonMines++;
+      }
+      if (cell.isMine && cell.flagged) {
+        correctFlags++;
+      }
+    }
+  }
+  const totalNonMines = numRows * numCols - numMines;
+  if (revealedNonMines === totalNonMines || correctFlags === numMines) {
+    launchConfetti();
+    alert("You win!");
+    isGameOver = true;
+    revealAll();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
