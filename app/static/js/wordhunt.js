@@ -23,7 +23,6 @@ async function fetchWordList() {
     console.log("Word list fetched:", wordList);
   } catch (error) {
     console.error("Failed to fetch word list:", error);
-    // Use a default word list if fetching fails
     wordList = ["cat", "dog", "code", "game", "hunt", "word"];
   }
 }
@@ -85,9 +84,9 @@ async function checkWord() {
 async function validateWord(word) {
   try {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    return response.ok; // Word exists if the API response is OK
+    return response.ok; 
   } catch {
-    return false; // Treat as invalid if there's an error
+    return false; 
   }
 }
 
@@ -130,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   foundWordsDiv = document.getElementById("foundWords");
   gameMessage = document.getElementById("gameMessage");
 
-  await fetchWordList(); // Fetch the word list first
+  await fetchWordList(); 
   createBoard();
   renderBoard();
   
