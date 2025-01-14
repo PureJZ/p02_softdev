@@ -1,6 +1,6 @@
-const numRows = 4; 
-const numCols = 4;
-const wordList = ["cat", "dog", "code", "game", "hunt", "word"]; 
+const numRows = 6; 
+const numCols = 6;
+let wordList = [];
 let board = [];
 let selectedWord = "";
 let selectedCells = [];
@@ -10,6 +10,22 @@ let resetBtn, gameBoard, foundWordsDiv, gameMessage;
 function getRandomLetter() {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   return alphabet[Math.floor(Math.random() * alphabet.length)];
+}
+
+async function fetchWordList() {
+  try {
+    const response = await fetch("https://random-word-api.herokuapp.com/all");
+    if (!response.ok) {
+      throw new Error(`Error fetching word list: ${response.status}`);
+    }
+    const data = await response.json();
+    wordList = data.filter(word => word.length <= numCols && /^[a-zA-Z]+$/.test(word));
+    console.log("Word list fetched:", wordList);
+  } catch (error) {
+    console.error("Failed to fetch word list:", error);
+    // Use a default word list if fetching fails
+    wordList = ["cat", "dog", "code", "game", "hunt", "word"];
+  }
 }
 
 function createBoard() {
@@ -54,8 +70,9 @@ function selectCell(row, col) {
   renderBoard();
 }
 
-function checkWord() {
-  if (wordList.includes(selectedWord.toLowerCase()) && !foundWords.includes(selectedWord)) {
+async function checkWord() {
+  const isValid = await validateWord(selectedWord.toLowerCase());
+  if (isValid && !foundWords.includes(selectedWord)) {
     foundWords.push(selectedWord);
     updateFoundWords();
     gameMessage.textContent = "Good job! Word found.";
@@ -63,6 +80,15 @@ function checkWord() {
     gameMessage.textContent = "Not a valid word. Try again!";
   }
   resetSelection();
+}
+
+async function validateWord(word) {
+  try {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    return response.ok; // Word exists if the API response is OK
+  } catch {
+    return false; // Treat as invalid if there's an error
+  }
 }
 
 function resetSelection() {
@@ -98,14 +124,16 @@ function isGameOver() {
   return foundWords.length === wordList.length;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   resetBtn = document.getElementById("resetBtn");
   gameBoard = document.getElementById("gameBoard");
   foundWordsDiv = document.getElementById("foundWords");
   gameMessage = document.getElementById("gameMessage");
 
+  await fetchWordList(); // Fetch the word list first
   createBoard();
   renderBoard();
+  
   resetBtn.addEventListener("click", resetGame);
   document.getElementById("submitWord").addEventListener("click", checkWord);
 });
