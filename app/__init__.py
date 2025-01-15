@@ -150,12 +150,11 @@ def get_snake_leaderboard():
 
 @app.route('/save_minesweeper_time', methods=['POST'])
 def save_minesweeper_time():
-    """Save Minesweeper completion time."""
     if 'user_id' not in session:
         return {"error": "User not logged in"}, 401
     
     user_id = session['user_id']
-    time = request.json.get('time')  
+    time = request.json.get('time') 
     
     if time is None:
         return {"error": "Time is required"}, 400
@@ -171,7 +170,6 @@ def save_minesweeper_time():
 
 @app.route('/get_minesweeper_leaderboard', methods=['GET'])
 def get_minesweeper_leaderboard():
-    """Get the Minesweeper game leaderboard."""
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
@@ -186,6 +184,7 @@ def get_minesweeper_leaderboard():
     conn.close()
 
     return {"leaderboard": [dict(row) for row in leaderboard]}, 200
+
 
 @app.route('/leaderboard')
 def leaderboard():

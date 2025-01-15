@@ -71,6 +71,19 @@ function initializeBoard() {
   renderBestTime();
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  resetBtn = document.getElementById("resetBtn");
+  gameBoard = document.getElementById("gameBoard");
+  initializeBoard();
+  renderBoard();
+  resetBtn.addEventListener("click", () => {
+    initializeBoard();
+    renderBoard();
+    resetGameMessage();
+  });
+});
+
+
 function revealCell(row, col) {
   if (isGameOver) return;
   if (
@@ -192,6 +205,13 @@ function saveBestTime() {
     bestTime = timer;
     localStorage.setItem("bestMinesweeperTime", bestTime);
     renderBestTime();
+
+    // Save best time to server
+    fetch('/save_minesweeper_time', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ time: bestTime }),
+    }).catch((err) => console.error('Failed to save best time:', err));
   }
 }
 
@@ -216,6 +236,47 @@ function checkWin() {
     isGameOver = true;
     revealAll();
   }
+}
+
+function launchConfetti() {
+  const duration = 2 * 1000; // 2 seconds
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      startVelocity: 30,
+      spread: 360,
+      origin: { x: Math.random(), y: Math.random() - 0.2 },
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
+}
+
+function fetchLeaderboard() {
+  fetch('/get_minesweeper_leaderboard')
+    .then((response) => response.json())
+    .then((data) => {
+      const leaderboard = data.leaderboard;
+      const leaderboardDiv = document.getElementById('leaderboard');
+      leaderboardDiv.innerHTML = '<h3>Leaderboard</h3>';
+
+      if (leaderboard && leaderboard.length > 0) {
+        const list = document.createElement('ul');
+        leaderboard.forEach((entry, index) => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `${index + 1}. ${entry.username} - ${entry.best_time} seconds`;
+          list.appendChild(listItem);
+        });
+        leaderboardDiv.appendChild(list);
+      } else {
+        leaderboardDiv.innerHTML += '<p>No leaderboard data available.</p>';
+      }
+    })
+    .catch((error) => console.error('Error fetching leaderboard:', error));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
