@@ -185,19 +185,26 @@ function resetGameMessage() {
 function checkWin() {
   let revealedNonMines = 0;
   let correctFlags = 0;
+  let totalFlags = 0;
+
   for (let i = 0; i < numRows; i++) {
     for (let j = 0; j < numCols; j++) {
       const cell = board[i][j];
       if (!cell.isMine && cell.revealed) {
         revealedNonMines++;
       }
-      if (cell.isMine && cell.flagged) {
-        correctFlags++;
+      if (cell.flagged) {
+        totalFlags++;
+        if (cell.isMine) {
+          correctFlags++;
+        }
       }
     }
   }
+
   const totalNonMines = numRows * numCols - numMines;
-  if (revealedNonMines === totalNonMines || correctFlags === numMines) {
+
+  if (revealedNonMines === totalNonMines && correctFlags === numMines && totalFlags === numMines) {
     launchConfetti();
     document.getElementById("gameMessage").textContent = "You Win! 🎉";
     document.getElementById("gameMessage").classList.remove("hidden");
