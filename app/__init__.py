@@ -104,6 +104,11 @@ def minesweeper():
 def wordhunt():
     return render_template('wordhunt.html')
 
+@app.route('/snake')
+def snake():
+    return render_template('snake.html')
+
+
 if __name__ == "__main__":
     init_db()
     app.debug = True

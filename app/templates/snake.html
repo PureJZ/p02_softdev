@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Snake Game</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f3f4f6;
+      }
+      canvas {
+        border: 2px solid #4b5563;
+        background-color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="bg-white shadow p-4 mb-4 w-full">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
+          Romeloquan
+        </a>
+        <div class="space-x-4">
+          {% if 'user_id' in session %}
+            <span class="text-gray-600">Hi, {{ session.username }}!</span>
+            <a
+              href="{{ url_for('logout') }}"
+              class="text-red-500 hover:text-red-700 underline"
+            >
+              Logout
+            </a>
+          {% else %}
+            <a
+              href="{{ url_for('signup') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Sign Up
+            </a>
+            <a
+              href="{{ url_for('login') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Login
+            </a>
+          {% endif %}
+          <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
+          <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
+        </div>
+      </div>
+    </nav>
+    <h2 class="text-2xl font-bold mb-4">Snake Game</h2>
+    <p class="mb-4 text-gray-700">Use arrow keys to move the snake. Eat food to grow. Don't hit the walls or yourself!</p>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="gameMessage" class="mt-4 text-xl text-red-500 font-bold hidden">Game Over!</div>
+    <script src="{{ url_for('static', filename='js/snake.js') }}"></script>
+  </body>
+</html>
