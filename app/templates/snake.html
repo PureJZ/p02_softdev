@@ -57,6 +57,18 @@
     <h2 class="text-2xl font-bold mb-4">Snake Game</h2>
     <p class="mb-4 text-gray-700">Use arrow keys to move the snake. Eat food to grow. Don't hit the walls or yourself!</p>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <h2 class="text-2xl font-bold mb-4">Snake Game</h2>
+<p class="mb-4 text-gray-700">Use arrow keys to move the snake. Eat food to grow. Don't hit the walls or yourself!</p>
+<p id="scoreDisplay" class="mb-4 text-lg font-semibold text-gray-800">Score: 0</p>
+<button
+  id="restartBtn"
+  class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold mb-4"
+>
+  Restart Game
+</button>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<div id="gameMessage" class="mt-4 text-xl text-red-500 font-bold hidden">Game Over!</div>
+
     <div id="gameMessage" class="mt-4 text-xl text-red-500 font-bold hidden">Game Over!</div>
     <script src="{{ url_for('static', filename='js/snake.js') }}"></script>
   </body>
