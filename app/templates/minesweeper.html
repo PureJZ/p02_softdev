@@ -31,7 +31,7 @@
     </style>
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white shadow p-4 mb-4 w-full">
+    <nav class="bg-white shadow p-4 mb-4">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
           Romeloquan
@@ -59,9 +59,24 @@
               Login
             </a>
           {% endif %}
-          <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
-          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
-          <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
+          <a
+            href="{{ url_for('minesweeper') }}"
+            class="text-gray-700 hover:text-gray-900 underline"
+          >
+            Minesweeper
+          </a>
+          <a
+          href="{{ url_for('wordhunt') }}"
+          class="text-gray-700 hover:text-gray-900 underline"
+          >
+            Word Hunt
+          </a>
+          <a
+          href="{{ url_for('snake') }}"
+          class="text-gray-700 hover:text-gray-900 underline"
+          >
+            Snake
+          </a>
         </div>
       </div>
     </nav>
