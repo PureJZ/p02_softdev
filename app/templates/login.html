@@ -6,50 +6,40 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white shadow p-4 mb-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-          <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
-            Romeloquan
-          </a>
-      
-          <div class="space-x-4">
-            {% if 'user_id' in session %}
-              <span class="text-gray-600">Hi, {{ session.username }}!</span>
-              <a
-                href="{{ url_for('logout') }}"
-                class="text-red-500 hover:text-red-700 underline"
-              >
-                Logout
-              </a>
-            {% else %}
-              <a
-                href="{{ url_for('signup') }}"
-                class="text-blue-500 hover:text-blue-700 underline"
-              >
-                Sign Up
-              </a>
-              <a
-                href="{{ url_for('login') }}"
-                class="text-blue-500 hover:text-blue-700 underline"
-              >
-                Login
-              </a>
-            {% endif %}
+   <nav class="bg-white shadow p-4 mb-4 w-full">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
+          Romeloquan
+        </a>
+        <div class="space-x-4">
+          {% if 'user_id' in session %}
+            <span class="text-gray-600">Hi, {{ session.username }}!</span>
             <a
-              href="{{ url_for('minesweeper') }}"
-              class="text-gray-700 hover:text-gray-900 underline"
+              href="{{ url_for('logout') }}"
+              class="text-red-500 hover:text-red-700 underline"
             >
-              Minesweeper
+              Logout
+            </a>
+          {% else %}
+            <a
+              href="{{ url_for('signup') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Sign Up
             </a>
             <a
-            href="{{ url_for('wordhunt') }}"
-            class="text-gray-700 hover:text-gray-900 underline"
+              href="{{ url_for('login') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
             >
-              Word Hunt
+              Login
             </a>
-          </div>
+          {% endif %}
+          <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
+          <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
         </div>
-      </nav>
+      </div>
+    </nav>
       
 
     <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded shadow-md">
