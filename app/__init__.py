@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, request, session, redirect, url_for, render_template, flash
+from flask import Flask, request, session, redirect, url_for, render_template, flash,jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db_scripts.setup_db import init_db
@@ -152,10 +152,10 @@ def get_snake_leaderboard():
 def save_minesweeper_time():
     if 'user_id' not in session:
         return {"error": "User not logged in"}, 401
-    
+
     user_id = session['user_id']
-    time = request.json.get('time') 
-    
+    time = request.json.get('time')  
+
     if time is None:
         return {"error": "Time is required"}, 400
 
@@ -183,8 +183,7 @@ def get_minesweeper_leaderboard():
     leaderboard = cur.fetchall()
     conn.close()
 
-    return {"leaderboard": [dict(row) for row in leaderboard]}, 200
-
+    return {"leaderboard": [dict(row) for row in leaderboard]}
 
 @app.route('/leaderboard')
 def leaderboard():
