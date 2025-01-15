@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, request, session, redirect, url_for, render_template, flash
+from flask import Flask, request, session, redirect, url_for, render_template, flash,jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db_scripts.setup_db import init_db
@@ -13,6 +13,13 @@ def get_db_connection():
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
 
+@app.before_request
+def require_login():
+    public_routes = ['login', 'signup', 'home', 'static']
+    if request.endpoint not in public_routes and 'user_id' not in session:
+        flash("Please log in to access this page.", "error")
+        return redirect(url_for('login'))
+    
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -96,6 +103,92 @@ def minesweeper():
 @app.route('/wordhunt')
 def wordhunt():
     return render_template('wordhunt.html')
+
+@app.route('/snake')
+def snake():
+    return render_template('snake.html')
+
+@app.route('/save_snake_score', methods=['POST'])
+def save_snake_score():
+    """Save Snake game score."""
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+    
+    user_id = session['user_id']
+    score = request.json.get('score')  # Score sent from frontend
+    
+    if score is None:
+        return {"error": "Score is required"}, 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO snake_scores (user_id, score) VALUES (?, ?)', (user_id, score))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Snake score saved successfully"}, 200
+
+
+@app.route('/get_snake_leaderboard', methods=['GET'])
+def get_snake_leaderboard():
+    """Get the Snake game leaderboard."""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, MAX(s.score) AS high_score
+        FROM snake_scores s
+        JOIN users u ON s.user_id = u.id
+        GROUP BY s.user_id
+        ORDER BY high_score DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return {"leaderboard": [dict(row) for row in leaderboard]}, 200
+
+
+@app.route('/save_minesweeper_time', methods=['POST'])
+def save_minesweeper_time():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+    time = request.json.get('time')  
+
+    if time is None:
+        return {"error": "Time is required"}, 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO minesweeper_scores (user_id, time) VALUES (?, ?)', (user_id, time))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Minesweeper time saved successfully"}, 200
+
+
+@app.route('/get_minesweeper_leaderboard', methods=['GET'])
+def get_minesweeper_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, MIN(m.time) AS best_time
+        FROM minesweeper_scores m
+        JOIN users u ON m.user_id = u.id
+        GROUP BY m.user_id
+        ORDER BY best_time ASC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return {"leaderboard": [dict(row) for row in leaderboard]}
+
+@app.route('/leaderboard')
+def leaderboard():
+    """Render the leaderboard selection page."""
+    return render_template('leaderboard.html')
 
 if __name__ == "__main__":
     init_db()

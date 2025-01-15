@@ -33,9 +33,11 @@
     </style>
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white shadow p-4 mb-4">
+    <nav class="bg-white shadow p-4 mb-4 w-full">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <a href="/" class="text-xl font-bold text-gray-800">Romeloquan</a>
+        <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
+          Romeloquan
+        </a>
         <div class="space-x-4">
           {% if 'user_id' in session %}
             <span class="text-gray-600">Hi, {{ session.username }}!</span>
@@ -59,18 +61,11 @@
               Login
             </a>
           {% endif %}
-          <a
-          href="{{ url_for('minesweeper') }}"
-          class="text-gray-700 hover:text-gray-900 underline"
-          >
-            Minesweeper
-          </a>
-          <a
-            href="{{ url_for('wordhunt') }}"
-            class="text-gray-700 hover:text-gray-900 underline"
-          >
-            Word Hunt
-          </a>
+          
+          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
+          <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
+          <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+          <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
         </div>
       </div>
     </nav>

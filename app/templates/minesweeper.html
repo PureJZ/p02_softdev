@@ -31,7 +31,7 @@
     </style>
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white shadow p-4 mb-4">
+    <nav class="bg-white shadow p-4 mb-4 w-full">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
           Romeloquan
@@ -59,18 +59,11 @@
               Login
             </a>
           {% endif %}
-          <a
-            href="{{ url_for('minesweeper') }}"
-            class="text-gray-700 hover:text-gray-900 underline"
-          >
-            Minesweeper
-          </a>
-          <a
-          href="{{ url_for('wordhunt') }}"
-          class="text-gray-700 hover:text-gray-900 underline"
-          >
-            Word Hunt
-          </a>
+          
+          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
+          <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
+          <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+          <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
         </div>
       </div>
     </nav>
@@ -87,8 +80,14 @@
       >
         New Game
       </button>
+      <div class="text-center mb-4">
+        <p id="timer" class="text-lg font-semibold text-gray-800">Time: 0s</p>
+        <p id="bestTime" class="text-lg font-semibold text-gray-800">Best Time: None</p>
+      </div>
+      
       <div id="gameBoard"></div>
     </div>
+    
     <div
   id="gameMessage"
   class="hidden text-center text-green-500 text-xl font-bold mt-4"

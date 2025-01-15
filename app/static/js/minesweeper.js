@@ -5,7 +5,7 @@ const numMines = 10;
 let board = [];
 let isGameOver = false;
 let isFirstMove = true;
-let resetBtn, gameBoard;
+let resetBtn, gameBoard, timer, timerInterval, bestTime;
 
 function createEmptyBoard() {
   board = [];
@@ -67,7 +67,22 @@ function initializeBoard() {
   isGameOver = false;
   isFirstMove = true;
   createEmptyBoard();
+  resetTimer();
+  renderBestTime();
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  resetBtn = document.getElementById("resetBtn");
+  gameBoard = document.getElementById("gameBoard");
+  initializeBoard();
+  renderBoard();
+  resetBtn.addEventListener("click", () => {
+    initializeBoard();
+    renderBoard();
+    resetGameMessage();
+  });
+});
+
 
 function revealCell(row, col) {
   if (isGameOver) return;
@@ -86,6 +101,7 @@ function revealCell(row, col) {
     placeMines(row, col);
     calculateAdjacentCounts();
     isFirstMove = false;
+    startTimer();
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         revealCell(row + dx, col + dy);
@@ -98,6 +114,7 @@ function revealCell(row, col) {
   if (board[row][col].isMine) {
     alert("Game Over! You stepped on a mine.");
     isGameOver = true;
+    stopTimer();
     revealAll();
     return;
   }
@@ -158,52 +175,108 @@ function revealAll() {
   renderBoard();
 }
 
-function launchConfetti() {
-  const end = Date.now() + 2500;
-  (function frame() {
-    confetti({
-      particleCount: 7,
-      startVelocity: 30,
-      spread: 360,
-      origin: {
-        x: Math.random(),
-        y: Math.random() - 0.2,
-      },
-    });
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
-  })();
+function startTimer() {
+  timer = 0;
+  timerInterval = setInterval(() => {
+    timer++;
+    document.getElementById("timer").textContent = `Time: ${timer}s`;
+  }, 1000);
 }
 
-function resetGameMessage() {
-  const gameMessage = document.getElementById("gameMessage");
-  gameMessage.textContent = "";
-  gameMessage.classList.add("hidden");
+function stopTimer() {
+  clearInterval(timerInterval);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timer = 0;
+  document.getElementById("timer").textContent = `Time: 0s`;
+}
+
+function renderBestTime() {
+  bestTime = localStorage.getItem("bestMinesweeperTime") || null;
+  document.getElementById("bestTime").textContent = bestTime
+    ? `Best Time: ${bestTime}s`
+    : "Best Time: None";
+}
+
+function saveBestTime() {
+  if (!bestTime || timer < bestTime) {
+    bestTime = timer;
+    localStorage.setItem("bestMinesweeperTime", bestTime);
+    renderBestTime();
+
+    // Save best time to server
+    fetch('/save_minesweeper_time', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ time: bestTime }),
+    }).catch((err) => console.error('Failed to save best time:', err));
+  }
 }
 
 function checkWin() {
   let revealedNonMines = 0;
-  let correctFlags = 0;
   for (let i = 0; i < numRows; i++) {
     for (let j = 0; j < numCols; j++) {
-      const cell = board[i][j];
-      if (!cell.isMine && cell.revealed) {
+      if (!board[i][j].isMine && board[i][j].revealed) {
         revealedNonMines++;
-      }
-      if (cell.isMine && cell.flagged) {
-        correctFlags++;
       }
     }
   }
+
   const totalNonMines = numRows * numCols - numMines;
-  if (revealedNonMines === totalNonMines || correctFlags === numMines) {
+
+  if (revealedNonMines === totalNonMines) {
+    stopTimer();
+    saveBestTime();
     launchConfetti();
     document.getElementById("gameMessage").textContent = "You Win! 🎉";
     document.getElementById("gameMessage").classList.remove("hidden");
     isGameOver = true;
     revealAll();
   }
+}
+
+function launchConfetti() {
+  const duration = 2 * 1000; // 2 seconds
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      startVelocity: 30,
+      spread: 360,
+      origin: { x: Math.random(), y: Math.random() - 0.2 },
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
+}
+
+function fetchLeaderboard() {
+  fetch('/get_minesweeper_leaderboard')
+    .then((response) => response.json())
+    .then((data) => {
+      const leaderboard = data.leaderboard;
+      const leaderboardDiv = document.getElementById('leaderboard');
+      leaderboardDiv.innerHTML = '<h3>Leaderboard</h3>';
+
+      if (leaderboard && leaderboard.length > 0) {
+        const list = document.createElement('ul');
+        leaderboard.forEach((entry, index) => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `${index + 1}. ${entry.username} - ${entry.best_time} seconds`;
+          list.appendChild(listItem);
+        });
+        leaderboardDiv.appendChild(list);
+      } else {
+        leaderboardDiv.innerHTML += '<p>No leaderboard data available.</p>';
+      }
+    })
+    .catch((error) => console.error('Error fetching leaderboard:', error));
 }
 
 document.addEventListener("DOMContentLoaded", () => {

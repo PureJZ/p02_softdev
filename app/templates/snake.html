@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Snake Game</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50;
+  background-color: #f3f4f6;
+}
+
+      canvas {
+        border: 2px solid #4b5563;
+        background-color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Word Hunt</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      #gameBoard {
+        display: grid;
+        grid-template-columns: repeat(6, 60px);
+        gap: 0;
+        margin-top: 1rem;
+      }
+      .cell {
+        width: 60px;
+        height: 60px;
+        border: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .cell.selected {
+        background-color: lightblue;
+      }
+      .found-word {
+        padding: 0.5rem 0;
+        font-size: 1rem;
+        color: #4a5568;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow p-4 mb-4 w-full">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+          <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
+            Romeloquan
+          </a>
+          <div class="space-x-4">
+            {% if 'user_id' in session %}
+              <span class="text-gray-600">Hi, {{ session.username }}!</span>
+              <a
+                href="{{ url_for('logout') }}"
+                class="text-red-500 hover:text-red-700 underline"
+              >
+                Logout
+              </a>
+            {% else %}
+              <a
+                href="{{ url_for('signup') }}"
+                class="text-blue-500 hover:text-blue-700 underline"
+              >
+                Sign Up
+              </a>
+              <a
+                href="{{ url_for('login') }}"
+                class="text-blue-500 hover:text-blue-700 underline"
+              >
+                Login
+              </a>
+            {% endif %}
+            
+            <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
+            <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
+            <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+            <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
+          </div>
+        </div>
+      </nav>
+
+    <h2 class="text-2xl font-bold mb-4">Snake Game</h2>
+<p class="mb-4 text-gray-700">Use arrow keys to move the snake. Eat food to grow. Don't hit the walls or yourself!</p>
+<p id="scoreDisplay" class="mb-4 text-lg font-semibold text-gray-800">Score: 0</p>
+<button
+  id="restartBtn"
+  class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold mb-4"
+>
+  Restart Game
+</button>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<div id="gameMessage" class="mt-4 text-xl text-red-500 font-bold hidden">Game Over!</div>
+
+    <script src="{{ url_for('static', filename='js/snake.js') }}"></script>
+  </body>
+</html>
