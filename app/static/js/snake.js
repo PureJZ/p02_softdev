@@ -35,55 +35,63 @@ function drawSnake() {
 }
 
 function moveSnake() {
-  if (isGameOver) return;
+    if (isGameOver) return;
+  
+    const head = { ...snake[0] };
+  
+    switch (direction) {
+      case "LEFT":
+        head.x -= boxSize;
+        break;
+      case "UP":
+        head.y -= boxSize;
+        break;
+      case "RIGHT":
+        head.x += boxSize;
+        break;
+      case "DOWN":
+        head.y += boxSize;
+        break;
+      default:
+        return;
+    }
+  
+    if (
+      head.x < 0 ||
+      head.y < 0 ||
+      head.x >= canvas.width ||
+      head.y >= canvas.height ||
+      snake.some((segment) => segment.x === head.x && segment.y === head.y)
+    ) {
+      document.getElementById("gameMessage").classList.remove("hidden");
+      clearInterval(game);
+      isGameOver = true;
+  
 
-  const head = { ...snake[0] };
-
-  switch (direction) {
-    case "LEFT":
-      head.x -= boxSize;
-      break;
-    case "UP":
-      head.y -= boxSize;
-      break;
-    case "RIGHT":
-      head.x += boxSize;
-      break;
-    case "DOWN":
-      head.y += boxSize;
-      break;
-    default:
+      fetch('/save_snake_score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ score }),
+      });
+  
       return;
+    }
+  
+    if (head.x === food.x && head.y === food.y) {
+      score++;
+      document.getElementById("scoreDisplay").textContent = `Score: ${score}`;
+      food = {
+        x: Math.floor(Math.random() * (canvas.width / boxSize)) * boxSize,
+        y: Math.floor(Math.random() * (canvas.height / boxSize)) * boxSize,
+      };
+    } else {
+      snake.pop();
+    }
+  
+    snake.unshift(head);
   }
-
-
-  if (
-    head.x < 0 ||
-    head.y < 0 ||
-    head.x >= canvas.width ||
-    head.y >= canvas.height ||
-    snake.some((segment) => segment.x === head.x && segment.y === head.y)
-  ) {
-    document.getElementById("gameMessage").classList.remove("hidden");
-    clearInterval(game);
-    isGameOver = true;
-    return;
-  }
-
-
-  if (head.x === food.x && head.y === food.y) {
-    score++;
-    document.getElementById("scoreDisplay").textContent = `Score: ${score}`;
-    food = {
-      x: Math.floor(Math.random() * (canvas.width / boxSize)) * boxSize,
-      y: Math.floor(Math.random() * (canvas.height / boxSize)) * boxSize,
-    };
-  } else {
-    snake.pop();
-  }
-
-  snake.unshift(head);
-}
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
