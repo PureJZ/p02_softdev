@@ -13,6 +13,13 @@ def get_db_connection():
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
 
+@app.before_request
+def require_login():
+    public_routes = ['login', 'signup', 'home', 'static']
+    if request.endpoint not in public_routes and 'user_id' not in session:
+        flash("Please log in to access this page.", "error")
+        return redirect(url_for('login'))
+    
 @app.route("/")
 def home():
     return render_template("home.html")
