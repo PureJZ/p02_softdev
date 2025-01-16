@@ -65,6 +65,76 @@
           -webkit-backface-visibility: hidden;
         }
         
+        #chatBox {
+            position: absolute;
+            font-size: 2vh;
+            margin-bottom: 25vh;
+            margin-left: 105vh;
+          }
+          
+          
+          .text{
+            display: absolute;
+            font-size: 20px;
+            left: 200px;
+          }
+          
+          .guess {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+            border: 2px solid #333;
+            font-size: 24px;
+          }
+          #keyboard {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              margin-top: 20vh;
+          }
+          
+          .keyboard-row {
+              display: flex;
+              justify-content: center;
+              margin: .5% 0;
+          }
+          .key {
+              width: 5vh;
+              height: 4vh;
+              margin: .5%;
+              border-radius: 14px;
+              border: none;
+              background-color: #d3d6da;
+              cursor: pointer;
+              BORDER: 2px solid #686e75;
+          }
+          
+          .enter-key {
+              width: 10vh; /* Adjust width to fit your design */
+          }
+          
+          .delete-key {
+              font-size: 2.5vh; /* Adjust size of the "X" symbol */
+              text-align: center;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+          }
+          
+          #guessInput {
+            margin-right: 10px;
+          }
+          
+          #playAgainButton {
+              position: fixed;
+              margin-top: 37vh;
+              width: 10vw;
+              height: 3vh;
+              border-radius: 14px;
+          }
+
         .wordle-box .front {
           transform: rotateX(0deg);
         }
@@ -127,6 +197,8 @@
           100% {
             transform: translate(1px);
           }
+
+
         }
     </style>
   </head>
@@ -175,15 +247,14 @@
         <p class="text-gray-700">
             Guess the five letter word!
         </p>
-        <div class="flex space-x-4 mb-4">
-            <div class ="wordle-grid">
-                <div class = "wordle-box">
-                    <div class = "front"> </div>
-                    <div class = "back"> </div>
-                </div>
+        <div class="wordle-grid grid grid-cols-5 grid-rows-6 h-[250px] w-[350px] gap-[1%] justify-center items-center pb-0">
+            <div class="wordle-box relative flex justify-center items-center w-4/5 h-4/5 rounded-lg border-2 border-gray-300 font-bold text-black perspective-[1000px]">
+                <div class="front absolute inset-0 flex justify-center items-center w-full h-full rounded-lg border-2 border-gray-300 font-bold text-black transition-transform backface-hidden"></div>
+                <div class="back absolute inset-0 flex justify-center items-center w-full h-full rounded-lg border-2 border-gray-300 font-bold text-black transition-transform backface-hidden transform rotate-x-180"></div>
             </div>
         </div>
         <div class="flex flex-col items-center">
+            <div id="chatBox"> </div>
             <button id="playAgainButton" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded" style="display: none;">Play Again</button>
             <div id="keyboard" class="mt-4"></div>
         </div>
