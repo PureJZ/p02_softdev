@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Block Fitting Game</title>
+      <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+    body {
+margin: 0;
+padding: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+height: 50;
+background-color: #f3f4f6;
+}
+        .game-container {
+            display: flex;
+            gap: 20px;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            grid-template-rows: repeat(8, 40px);
+            gap: 1px;
+            background-color: #333;
+            padding: 2px;
+            border-radius: 4px;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+        .filled {
+            background-color: #4CAF50;
+        }
+        .preview {
+            background-color: rgba(76, 175, 80, 0.3);
+        }
+        .game-info {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .block-selection {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .block-option {
+            display: grid;
+            gap: 1px;
+            background-color: #ddd;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .block-option.used {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .block-option:hover:not(.used) {
+            background-color: #bbb;
+        }
+        .block-row {
+            display: flex;
+            gap: 1px;
+        }
+        .block-cell {
+            width: 20px;
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 2px;
+        }
+        .empty-cell {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 2px;
+        }
+        #score {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #game-over {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+  <nav class="bg-white shadow p-4 mb-4 w-full">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="text-xl font-bold text-gray-800">
+          Romeloquan
+        </a>
+        <div class="space-x-4">
+          {% if 'user_id' in session %}
+            <span class="text-gray-600">Hi, {{ session.username }}!</span>
+            <a
+              href="{{ url_for('logout') }}"
+              class="text-red-500 hover:text-red-700 underline"
+            >
+              Logout
+            </a>
+          {% else %}
+            <a
+              href="{{ url_for('signup') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Sign Up
+            </a>
+            <a
+              href="{{ url_for('login') }}"
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Login
+            </a>
+          {% endif %}
+
+          <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
+          <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
+          <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+          <a href="{{ url_for('wordle') }}" class="text-gray-700 hover:text-gray-900 underline"> Wordle </a>
+          <a href="{{ url_for('blockblast') }}" class="text-gray-700 hover:text-gray-900 underline">Block Blast</a>
+          <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
+        </div>
+      </div>
+    </nav>
+
+    <h2 class="text-2xl font-bold mb-4">Block Blast</h2>
+    <div class="game-container">
+        <div id="game-board"></div>
+        <div class="game-info">
+            <div id="score">Score: 0</div>
+            <div>Place all blocks to get a new set:</div>
+            <div class="block-selection" id="block-options"></div>
+            <button onclick="restartGame()">New Game</button>
+        </div>
+    </div>
+    <div id="game-over">
+        <h2>Game Over!</h2>
+        <p>You cannot place all remaining blocks.</p>
+        <button onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        const BOARD_SIZE = 8;
+        let gameBoard = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(0));
+        let score = 0;
+        let selectedBlock = null;
+        let selectedBlockIndex = null;
+        let currentBlocks = [];
+        let usedBlocks = new Set();
+
+        const blocks = [
+            [[1, 1], [1, 1]], // 2x2
+            [[1, 1, 1]], // 1x3
+            [[1], [1], [1]], // 3x1
+            [[1, 1, 1], [0, 1, 0]], // T shape
+            [[1, 1], [0, 1], [0, 1]], // L shape
+            [[1]], // 1x1
+        ];
+
+        function getRandomBlocks() {
+            let available = [...Array(blocks.length).keys()];
+            let selected = [];
+
+            for (let i = 0; i < 3; i++) {
+                const randomIndex = Math.floor(Math.random() * available.length);
+                selected.push(available[randomIndex]);
+                available.splice(randomIndex, 1);
+            }
+
+            return selected;
+        }
+
+        function createBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener('click', () => tryPlaceBlock(i, j));
+                    cell.addEventListener('mouseover', () => showBlockPreview(i, j));
+                    cell.addEventListener('mouseout', clearPreviews);
+                    board.appendChild(cell);
+                }
+            }
+        }
+
+        function createBlockOptions() {
+            const container = document.getElementById('block-options');
+            container.innerHTML = '';
+
+            currentBlocks.forEach((blockIndex, i) => {
+                const option = document.createElement('div');
+                option.className = 'block-option';
+                if (usedBlocks.has(i)) option.classList.add('used');
+                option.addEventListener('click', () => {
+                    if (!usedBlocks.has(i)) selectBlock(blockIndex, i);
+                });
+
+                const block = blocks[blockIndex];
+                block.forEach(row => {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'block-row';
+                    row.forEach(cell => {
+                        const cellDiv = document.createElement('div');
+                        cellDiv.className = cell ? 'block-cell' : 'empty-cell';
+                        rowDiv.appendChild(cellDiv);
+                    });
+                    option.appendChild(rowDiv);
+                });
+
+                container.appendChild(option);
+            });
+
+            checkGameOver();
+        }
+
+        function countBlockCells(block) {
+            return block.reduce((sum, row) =>
+                sum + row.reduce((rowSum, cell) => rowSum + cell, 0), 0);
+        }
+
+        function selectBlock(index, optionIndex) {
+            selectedBlock = blocks[index];
+            selectedBlockIndex = optionIndex;
+            clearPreviews();
+        }
+
+        function showBlockPreview(row, col) {
+            if (!selectedBlock) return;
+            clearPreviews();
+
+            if (canPlaceBlock(row, col, selectedBlock)) {
+                for (let i = 0; i < selectedBlock.length; i++) {
+                    for (let j = 0; j < selectedBlock[0].length; j++) {
+                        if (selectedBlock[i][j]) {
+                            const cell = document.querySelector(
+                                `[data-row="${row + i}"][data-col="${col + j}"]`
+                            );
+                            if (cell) cell.classList.add('preview');
+                        }
+                    }
+                }
+            }
+        }
+
+        function clearPreviews() {
+            document.querySelectorAll('.preview').forEach(cell => {
+                cell.classList.remove('preview');
+            });
+        }
+
+        function canPlaceBlock(row, col, block) {
+            if (!block) return false;
+
+            for (let i = 0; i < block.length; i++) {
+                for (let j = 0; j < block[0].length; j++) {
+                    if (block[i][j]) {
+                        if (row + i >= BOARD_SIZE || col + j >= BOARD_SIZE) return false;
+                        if (gameBoard[row + i][col + j]) return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function checkCanPlaceAnyBlock(block) {
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (canPlaceBlock(i, j, block)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function checkGameOver() {
+            const remainingBlocks = currentBlocks.filter((_, i) => !usedBlocks.has(i));
+
+            for (const blockIndex of remainingBlocks) {
+                if (!checkCanPlaceAnyBlock(blocks[blockIndex])) {
+                    document.getElementById('game-over').style.display = 'block';
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function tryPlaceBlock(row, col) {
+            if (!selectedBlock || usedBlocks.has(selectedBlockIndex)) return;
+
+            if (canPlaceBlock(row, col, selectedBlock)) {
+                let cellsPlaced = 0;
+                for (let i = 0; i < selectedBlock.length; i++) {
+                    for (let j = 0; j < selectedBlock[0].length; j++) {
+                        if (selectedBlock[i][j]) {
+                            gameBoard[row + i][col + j] = 1;
+                            const cell = document.querySelector(
+                                `[data-row="${row + i}"][data-col="${col + j}"]`
+                            );
+                            cell.classList.add('filled');
+                            cellsPlaced++;
+                        }
+                    }
+                }
+
+                // Add points for placed cells
+                score += cellsPlaced * 10;
+                document.getElementById('score').textContent = `Score: ${score}`;
+
+                checkLines();
+                usedBlocks.add(selectedBlockIndex);
+                selectedBlock = null;
+                selectedBlockIndex = null;
+                clearPreviews();
+
+                // If all blocks are used, get new set
+                if (usedBlocks.size === 3) {
+                    usedBlocks.clear();
+                    currentBlocks = getRandomBlocks();
+                }
+
+                createBlockOptions();
+            }
+        }
+
+        function checkLines() {
+            let rowsCleared = 0;
+            let colsCleared = 0;
+
+            // Check rows
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                if (gameBoard[i].every(cell => cell === 1)) {
+                    clearRow(i);
+                    rowsCleared++;
+                }
+            }
+
+            // Check columns
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                if (gameBoard.every(row => row[j] === 1)) {
+                    clearColumn(j);
+                    colsCleared++;
+                }
+            }
+
+            if (rowsCleared > 0 || colsCleared > 0) {
+                score += (rowsCleared + colsCleared) * 100;
+                document.getElementById('score').textContent = `Score: ${score}`;
+            }
+        }
+
+        function clearRow(row) {
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                gameBoard[row][j] = 0;
+                const cell = document.querySelector(`[data-row="${row}"][data-col="${j}"]`);
+                cell.classList.remove('filled');
+            }
+        }
+
+        function clearColumn(col) {
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                gameBoard[i][col] = 0;
+                const cell = document.querySelector(`[data-row="${i}"][data-col="${col}"]`);
+                cell.classList.remove('filled');
+            }
+        }
+
+        function restartGame() {
+            gameBoard = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(0));
+            score = 0;
+            selectedBlock = null;
+            selectedBlockIndex = null;
+            usedBlocks.clear();
+            document.getElementById('score').textContent = 'Score: 0';
+            document.getElementById('game-over').style.display = 'none';
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('filled', 'preview');
+            });
+            currentBlocks = getRandomBlocks();
+            createBlockOptions();
+        }
+
+        // Initialize game
+        currentBlocks = getRandomBlocks();
+        createBoard();
+        createBlockOptions();
+    </script>
+</body>
+</html>

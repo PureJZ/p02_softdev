@@ -35,11 +35,12 @@
               Login
             </a>
           {% endif %}
-          
+
           <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
           <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
           <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
           <a href="{{ url_for('wordle') }}" class="text-gray-700 hover:text-gray-900 underline"> Wordle </a>
+          <a href="{{ url_for('blockblast') }}" class="text-gray-700 hover:text-gray-900 underline"> Block Blast </a>
           <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
         </div>
       </div>
@@ -51,7 +52,7 @@
           <div class="mb-4">
             {% for category, msg in messages %}
               <div
-                class="px-4 py-2 rounded mb-2 
+                class="px-4 py-2 rounded mb-2
                 {% if category == 'success' %}
                   bg-green-100 border border-green-400 text-green-700
                 {% elif category == 'error' %}

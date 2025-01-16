@@ -7,7 +7,7 @@ from db_scripts.setup_db import init_db
 
 def get_db_connection():
     conn = sqlite3.connect('app.db')
-    conn.row_factory = sqlite3.Row  
+    conn.row_factory = sqlite3.Row
     return conn
 
 app = Flask(__name__)
@@ -19,7 +19,7 @@ def require_login():
     if request.endpoint not in public_routes and 'user_id' not in session:
         flash("Please log in to access this page.", "error")
         return redirect(url_for('login'))
-    
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -88,7 +88,7 @@ def signup():
         conn.close()
         flash("Registration successful! Please log in.", "success")
         return redirect(url_for('login'))
-    
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -112,15 +112,19 @@ def snake():
 def wordle():
     return render_template('wordle.html')
 
+@app.route('/blockblast')
+def blockblast():
+    return render_template('blockblast.html')
+
 @app.route('/save_snake_score', methods=['POST'])
 def save_snake_score():
     """Save Snake game score."""
     if 'user_id' not in session:
         return {"error": "User not logged in"}, 401
-    
+
     user_id = session['user_id']
     score = request.json.get('score')  # Score sent from frontend
-    
+
     if score is None:
         return {"error": "Score is required"}, 400
 
@@ -158,7 +162,7 @@ def save_minesweeper_time():
         return {"error": "User not logged in"}, 401
 
     user_id = session['user_id']
-    time = request.json.get('time')  
+    time = request.json.get('time')
 
     if time is None:
         return {"error": "Time is required"}, 400
@@ -198,5 +202,3 @@ if __name__ == "__main__":
     init_db()
     app.debug = True
     app.run()
-
-

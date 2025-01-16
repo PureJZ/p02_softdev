@@ -15,24 +15,24 @@
                 background-color: gold;
             }
         }
-        
+
         .wordle-box.win .back{
             animation: win-animation 1s ease-in-out forwards;
         }
-        
-        
+
+
         .wordle-grid {
             display: grid;
-            grid-template-columns: repeat(5, 60px); 
-            grid-template-rows: repeat(6, 60px); 
+            grid-template-columns: repeat(5, 60px);
+            grid-template-rows: repeat(6, 60px);
             height: 250px;
             width: 350px;
-            gap: 1%; 
-            justify-content: center; 
+            gap: 1%;
+            justify-content: center;
             align-items: center;
             padding-bottom: 0;
         }
-        
+
         .wordle-box {
           width: 80%;
           height: 80%;
@@ -47,7 +47,7 @@
           position: relative;
           perspective: 1000px; /* Perspective for 3D effect */
         }
-        
+
         .wordle-box .front,
         .wordle-box .back {
           width: 100%;
@@ -64,21 +64,21 @@
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
         }
-        
+
         #chatBox {
             position: absolute;
             font-size: 2vh;
             margin-bottom: 25vh;
             margin-left: 105vh;
           }
-          
-          
+
+
           .text{
             display: absolute;
             font-size: 20px;
             left: 200px;
           }
-          
+
           .guess {
             display: flex;
             justify-content: center;
@@ -94,7 +94,7 @@
               align-items: center;
               margin-top: 20vh;
           }
-          
+
           .keyboard-row {
               display: flex;
               justify-content: center;
@@ -110,11 +110,11 @@
               cursor: pointer;
               BORDER: 2px solid #686e75;
           }
-          
+
           .enter-key {
               width: 10vh; /* Adjust width to fit your design */
           }
-          
+
           .delete-key {
               font-size: 2.5vh; /* Adjust size of the "X" symbol */
               text-align: center;
@@ -122,11 +122,11 @@
               align-items: center;
               justify-content: center;
           }
-          
+
           #guessInput {
             margin-right: 10px;
           }
-          
+
           #playAgainButton {
               position: fixed;
               margin-top: 37vh;
@@ -138,30 +138,30 @@
         .wordle-box .front {
           transform: rotateX(0deg);
         }
-        
+
         .wordle-box .back {
           transform: rotateX(180deg);
         }
-        
+
         .wordle-box.flipped .front {
           transform: rotateX(180deg);
         }
-        
+
         .wordle-box.flipped .back {
           transform: rotateX(0deg);
         }
-        
+
         .wordle-box.no-transition .front,
         .wordle-box.no-transition .back {
           transition: none;
         }
-        
+
         /* shake animation */
         .shake {
           animation: shake 0.5s;
         }
         @keyframes speak {
-        
+
         }
         @keyframes shake {
           0% {
@@ -231,11 +231,12 @@
               Login
             </a>
           {% endif %}
-          
+
           <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
           <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
           <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
           <a href="{{ url_for('wordle') }}" class="text-gray-700 hover:text-gray-900 underline"> Wordle </a>
+          <a href="{{ url_for('blockblast') }}" class="text-gray-700 hover:text-gray-900 underline">Block Blast</a>
           <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
 
         </div>
