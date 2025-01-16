@@ -108,6 +108,10 @@ def wordhunt():
 def snake():
     return render_template('snake.html')
 
+@app.route('/wordle')
+def wordle():
+    return render_template('wordle.html')
+
 @app.route('/save_snake_score', methods=['POST'])
 def save_snake_score():
     """Save Snake game score."""
