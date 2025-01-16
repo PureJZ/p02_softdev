@@ -136,3 +136,53 @@ document.addEventListener("DOMContentLoaded", async () => {
   resetBtn.addEventListener("click", resetGame);
   document.getElementById("submitWord").addEventListener("click", checkWord);
 });
+
+let timer;
+let timeLeft = 60;
+
+function startTimer() {
+  timeLeft = 60; 
+  updateTimerDisplay();
+  clearInterval(timer); 
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      gameMessage.textContent = "Time's up! Game resetting...";
+      setTimeout(resetGame, 2000); 
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const timerDiv = document.getElementById("timer");
+  timerDiv.textContent = `Time left: ${timeLeft}s`;
+}
+
+function resetGame() {
+  clearInterval(timer); 
+  createBoard();
+  renderBoard();
+  foundWords = [];
+  selectedWord = "";
+  selectedCells = [];
+  gameMessage.textContent = "";
+  updateFoundWords();
+  startTimer();
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  resetBtn = document.getElementById("resetBtn");
+  gameBoard = document.getElementById("gameBoard");
+  foundWordsDiv = document.getElementById("foundWords");
+  gameMessage = document.getElementById("gameMessage");
+
+  await fetchWordList();
+  createBoard();
+  renderBoard();
+  
+  resetBtn.addEventListener("click", resetGame);
+  document.getElementById("submitWord").addEventListener("click", checkWord);
+  startTimer(); 
+});
