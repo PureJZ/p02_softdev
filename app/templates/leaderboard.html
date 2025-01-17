@@ -20,7 +20,7 @@
           <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
           <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
           <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
-          <a href="{{ url_for('wordle') }}" class="text-gray-700 hover:text-gray-900 underline"> Wordle </a>
+          <a href="{{ url_for('wordle') }}" class="text-gray-700 hover:text-gray-900 underline">Wordle</a>
           <a href="{{ url_for('blockblast') }}" class="text-gray-700 hover:text-gray-900 underline">Block Blast</a>
           <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
         </div>
@@ -36,6 +36,7 @@
         <button id="minesweeperBtn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold">Minesweeper</button>
         <button id="wordhuntBtn" class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 font-semibold">Word Hunt</button>
         <button id="blockblastBtn" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 font-semibold">Block Blast</button>
+        <button id="wordleBtn" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 font-semibold">Wordle</button>
       </div>
 
       <div id="leaderboard" class="bg-gray-100 p-4 rounded shadow-inner">
@@ -47,17 +48,21 @@
     </div>
 
     <script>
+      // Attach click listeners to buttons
       document.getElementById('snakeBtn').addEventListener('click', () => fetchLeaderboard('snake'));
       document.getElementById('minesweeperBtn').addEventListener('click', () => fetchLeaderboard('minesweeper'));
       document.getElementById('wordhuntBtn').addEventListener('click', () => fetchLeaderboard('wordhunt'));
       document.getElementById('blockblastBtn').addEventListener('click', () => fetchLeaderboard('blockblast'));
+      document.getElementById('wordleBtn').addEventListener('click', () => fetchLeaderboard('wordle'));
 
+      // Fetch leaderboard for the selected game
       async function fetchLeaderboard(game) {
         const endpointMap = {
           snake: '/get_snake_leaderboard',
           minesweeper: '/get_minesweeper_leaderboard',
           wordhunt: '/get_wordhunt_leaderboard',
-          blockblast: '/get_blockblast_leaderboard'
+          blockblast: '/get_blockblast_leaderboard',
+          wordle: '/get_wordle_leaderboard' // Ensure this matches the backend route
         };
 
         try {
@@ -65,15 +70,15 @@
           if (!response.ok) {
             throw new Error(`Failed to fetch leaderboard for ${game}`);
           }
-          const data = await response.json();
 
+          const data = await response.json();
           const leaderboardList = document.getElementById('leaderboardList');
           leaderboardList.innerHTML = '';
 
           if (data.leaderboard && data.leaderboard.length > 0) {
             data.leaderboard.forEach((entry, index) => {
               const listItem = document.createElement('li');
-              listItem.textContent = `${index + 1}. ${entry.username} - ${entry.high_score || entry.best_time}`;
+              listItem.textContent = `${index + 1}. ${entry.username} - ${entry.wins || entry.high_score || entry.best_time}`;
               leaderboardList.appendChild(listItem);
             });
           } else {

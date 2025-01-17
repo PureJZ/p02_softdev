@@ -268,6 +268,40 @@ def get_blockblast_leaderboard():
     return {"leaderboard": [dict(row) for row in leaderboard]}, 200
 
 
+@app.route('/increment_wordle_wins', methods=['POST'])
+def increment_wordle_wins():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO wordle_wins (user_id) VALUES (?)', (user_id,))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Win recorded successfully"}, 200
+
+@app.route('/get_wordle_leaderboard', methods=['GET'])
+def get_wordle_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, COUNT(w.id) AS wins
+        FROM wordle_wins w
+        JOIN users u ON w.user_id = u.id
+        GROUP BY w.user_id
+        ORDER BY wins DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return jsonify({"leaderboard": [dict(row) for row in leaderboard]}), 200
+
+
+
 @app.route('/leaderboard')
 def leaderboard():
     """Render the leaderboard selection page."""

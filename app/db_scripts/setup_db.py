@@ -58,7 +58,33 @@ def init_db(db_path='app.db'):
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
     ''')
-    
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL
+        );
+    ''')
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS wordhunt_wins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            wins INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        );
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS wordle_wins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+        );
+
+    ''')
     conn.commit()
     conn.close()
     print(f"Database initialized: {db_path}")

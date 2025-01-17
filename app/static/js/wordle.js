@@ -193,6 +193,7 @@ window.submitGuess = () => {
         updateColors(currentGuess);
         chatBox.textContent = "You Win!";
         currentAttempt++;
+        saveWinToServer();
         disableKeyboard();
         gameOver = true;
         setTimeout(() => {
@@ -220,6 +221,13 @@ function disableKeyboard() {
         key.disabled = true; 
     });
 }
+function saveWinToServer() {
+    fetch('/increment_wordle_wins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    }).catch(err => console.error('Failed to record win:', err));
+}
+
 
 function enableKeyboard() {
     const keys = document.querySelectorAll('.key');
