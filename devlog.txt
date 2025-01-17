@@ -4,6 +4,15 @@ jackieZ -- 1/2/2025 21:18
 - Added Team Name/Project Name
 - Updated database chart to reflect new leaderboard system and update component map and site map to be white 
 
+christopherL -- 1/9/2025 11:47
+- Outlined Flappy Bird Game
+- Researched how to code Flappy Bird with javascript
+
+christopherL -- 1/10/2025 11:45
+- Started basic block blast research on how to code
+- Outlined the block blast game
+- Started Block Blast Code
+
 jackieZ -- 1/11/2025 23:20
 - Added login/logout/register
 - Added minesweeper page

@@ -7,7 +7,6 @@
 
 ## App Description
 Our website will be an online gaming site where users can:
- * Acquire and use currency to buy collectables 
  * Play games including 
     * Minesweeper
     * Snake
