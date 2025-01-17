@@ -4,6 +4,9 @@ jackieZ -- 1/2/2025 21:18
 - Added Team Name/Project Name
 - Updated database chart to reflect new leaderboard system and update component map and site map to be white 
 
+wenZ -- 1/2/2025 18:30
+- Design document 
+
 christopherL -- 1/9/2025 11:47
 - Outlined Flappy Bird Game
 - Researched how to code Flappy Bird with javascript
@@ -33,11 +36,24 @@ raymondL -- 1/13/2025 18:40
 - Tried using a wordlist using a words.txt file
 - Didn't work, so implemented use of APIs
 
+wenZ -- 1/13/2025 17:50
+- Cleaned up code in minesweeper and snake game
+
 raymondL -- 1/14/2025 18:45
 - Finished wordhunt js 
 
+wenZ -- 1/14/2025 17:35
+- Started and almost done with Wordle game functionality 
+
 raymondL -- 1/15/2025 19:50
 - Made wordhunt game harder and bigger, added more features and letters
+
+wenZ -- 1/15/2025 20:30
+- Finished up Wordle and fixed the CSS/TW issue
+
+wenZ -- 1/16/2025 17:30
+- Fixed timer and added a score feature in word hunt 
+- Moved CSS in html files to its own CSS file 
 
 raymondL -- 1/16/2025 16:50
 - Added image icons for every page
@@ -46,5 +62,5 @@ raymondL -- 1/17/2025 00:55
 - Finished Design Doc and recording
 
 wenZ -- 1/17/2025 00:50
-- Screenrecorded and edited the video presentation
+- Screenrecorded and edited the video presentation using OBS and DaVinci
 
