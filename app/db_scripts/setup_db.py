@@ -4,7 +4,6 @@ def init_db(db_path='app.db'):
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
-
     cur.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,12 +24,12 @@ def init_db(db_path='app.db'):
 
     cur.execute('''
         CREATE TABLE IF NOT EXISTS minesweeper_scores (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    time INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            time INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        );
     ''')
 
     cur.execute('''

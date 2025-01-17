@@ -1,4 +1,4 @@
-const numRows = 6; 
+const numRows = 6;
 const numCols = 6;
 let totalPoints = 0;
 let wordList = [];
@@ -21,7 +21,6 @@ async function fetchWordList() {
     }
     const data = await response.json();
     wordList = data.filter(word => word.length <= numCols && /^[a-zA-Z]+$/.test(word));
-    // console.log("Word list fetched:", wordList);
   } catch (error) {
     console.error("Failed to fetch word list:", error);
     wordList = ["cat", "dog", "code", "game", "hunt", "word"];
@@ -76,7 +75,7 @@ async function checkWord() {
   if (isValid && !foundWords.includes(selectedWord)) {
     foundWords.push(selectedWord);
     updateFoundWords();
-    totalPoints += selectedWord.length; 
+    totalPoints += selectedWord.length;
     pointsMessage.textContent = `Points: ${totalPoints}`;
     gameMessage.textContent = "Good job! Word found.";
   } else {
@@ -89,9 +88,9 @@ async function checkWord() {
 async function validateWord(word) {
   try {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    return response.ok; 
+    return response.ok;
   } catch {
-    return false; 
+    return false;
   }
 }
 
@@ -120,28 +119,31 @@ function resetGame() {
   foundWords = [];
   selectedWord = "";
   selectedCells = [];
+  totalPoints = 0;
   gameMessage.textContent = "";
+  pointsMessage.textContent = `Points: ${totalPoints}`;
   updateFoundWords();
-} 
-
-function isGameOver() {
-  return foundWords.length === wordList.length;
 }
 
+function isGameOver() {
+  return timeLeft <= 0;
+}
 
 let timer;
 let timeLeft = 60;
 
 function startTimer() {
-  timeLeft = 60; 
+  timeLeft = 60;
   updateTimerDisplay();
-  clearInterval(timer); 
+  clearInterval(timer);
   timer = setInterval(() => {
     timeLeft--;
     updateTimerDisplay();
     if (timeLeft <= 0) {
       clearInterval(timer);
       gameMessage.textContent = "Time's up! Game Over.";
+      saveScoreToServer();
+      endGame();
       initializeGame();
     }
   }, 1000);
@@ -160,7 +162,7 @@ function initializeGame() {
 }
 
 function startNewGame() {
-  clearInterval(timer); 
+  clearInterval(timer);
   createBoard();
   renderBoard();
   gameBoard.style.display = "grid";
@@ -169,23 +171,41 @@ function startNewGame() {
   foundWords = [];
   selectedWord = "";
   selectedCells = [];
+  totalPoints = 0;
+  pointsMessage.textContent = `Points: ${totalPoints}`;
   gameMessage.textContent = "";
   updateFoundWords();
   startTimer();
 }
+
+function saveScoreToServer() {
+  fetch('/save_wordhunt_score', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ score: totalPoints }),
+  }).catch((err) => console.error('Failed to save Word Hunt score:', err));
+}
+
+function endGame() {
+  clearInterval(timer);
+  gameMessage.textContent = "Time's up! Game Over.";
+  saveScoreToServer();
+  initializeGame();
+}
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   resetBtn = document.getElementById("resetBtn");
   gameBoard = document.getElementById("gameBoard");
   foundWordsDiv = document.getElementById("foundWords");
   gameMessage = document.getElementById("gameMessage");
-  pointsMessage = document.getElementById("points")
-  currentWord = document.getElementById("word")
+  pointsMessage = document.getElementById("points");
+  currentWord = document.getElementById("word");
 
   await fetchWordList();
   initializeGame();
-  
+
   resetBtn.addEventListener("click", startNewGame);
   document.getElementById("submitWord").addEventListener("click", checkWord);
-  startTimer(); 
+  startTimer();
 });

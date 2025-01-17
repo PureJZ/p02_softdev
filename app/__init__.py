@@ -193,6 +193,45 @@ def get_minesweeper_leaderboard():
 
     return {"leaderboard": [dict(row) for row in leaderboard]}
 
+@app.route('/save_wordhunt_score', methods=['POST'])
+def save_wordhunt_score():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+    score = request.json.get('score')
+
+    if score is None:
+        return {"error": "Score is required"}, 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO wordhunt_scores (user_id, score) VALUES (?, ?)', (user_id, score))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Word Hunt score saved successfully"}, 200
+
+
+@app.route('/get_wordhunt_leaderboard', methods=['GET'])
+def get_wordhunt_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, MAX(w.score) AS max_score
+        FROM wordhunt_scores w
+        JOIN users u ON w.user_id = u.id
+        GROUP BY w.user_id
+        ORDER BY max_score DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return {"leaderboard": [dict(row) for row in leaderboard]}, 200
+
+
+
 @app.route('/leaderboard')
 def leaderboard():
     """Render the leaderboard selection page."""
