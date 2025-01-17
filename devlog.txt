@@ -1,10 +1,10 @@
-jackieZ -- 1/2/2024 21:18
+jackieZ -- 1/2/2025 21:18
 - Uploaded design doc pdf
 - Clarified leaderboard for each game
 - Added Team Name/Project Name
 - Updated database chart to reflect new leaderboard system and update component map and site map to be white 
 
-jackieZ -- 1/11/2024 23:20
+jackieZ -- 1/11/2025 23:20
 - Added login/logout/register
 - Added minesweeper page
 - Added navbar
@@ -12,3 +12,30 @@ jackieZ -- 1/11/2024 23:20
 - Fix minesweeper start and win logic
 - Fix confetti for win
 - Added restart game
+
+raymondL -- 1/11/2025 20:25
+- Added wordhunt html code
+- Helped with front-end
+
+raymondL -- 1/12/2025 19:25
+- Added wordhunt js code
+
+raymondL -- 1/13/2025 18:40
+- Tried using a wordlist using a words.txt file
+- Didn't work, so implemented use of APIs
+
+raymondL -- 1/14/2025 18:45
+- Finished wordhunt js 
+
+raymondL -- 1/15/2025 19:50
+- Made wordhunt game harder and bigger, added more features and letters
+
+raymondL -- 1/16/2025 16:50
+- Added image icons for every page
+
+raymondL -- 1/17/2025 00:55
+- Finished Design Doc and recording
+
+wenZ -- 1/17/2025 00:50
+- Screenrecorded and edited the video presentation
+
