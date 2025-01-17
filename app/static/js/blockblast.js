@@ -13,25 +13,24 @@ const blocks = [
     [[1, 1, 1], [0, 1, 0]], // T shape
     [[1, 1], [0, 1], [0, 1]], // L shape
     [[1]], // 1x1
+    [[1, 1, 1, 1]], // 1x4
+    [[1], [1], [1], [1]], // 4x1
 ];
 
 function getRandomBlocks() {
     let available = [...Array(blocks.length).keys()];
     let selected = [];
-
     for (let i = 0; i < 3; i++) {
         const randomIndex = Math.floor(Math.random() * available.length);
         selected.push(available[randomIndex]);
         available.splice(randomIndex, 1);
     }
-
     return selected;
 }
 
 function createBoard() {
     const board = document.getElementById('game-board');
     board.innerHTML = '';
-
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
             const cell = document.createElement('div');
@@ -49,7 +48,6 @@ function createBoard() {
 function createBlockOptions() {
     const container = document.getElementById('block-options');
     container.innerHTML = '';
-
     currentBlocks.forEach((blockIndex, i) => {
         const option = document.createElement('div');
         option.className = 'block-option';
@@ -57,7 +55,6 @@ function createBlockOptions() {
         option.addEventListener('click', () => {
             if (!usedBlocks.has(i)) selectBlock(blockIndex, i);
         });
-
         const block = blocks[blockIndex];
         block.forEach(row => {
             const rowDiv = document.createElement('div');
@@ -69,10 +66,8 @@ function createBlockOptions() {
             });
             option.appendChild(rowDiv);
         });
-
         container.appendChild(option);
     });
-
     checkGameOver();
 }
 
@@ -90,7 +85,6 @@ function selectBlock(index, optionIndex) {
 function showBlockPreview(row, col) {
     if (!selectedBlock) return;
     clearPreviews();
-
     if (canPlaceBlock(row, col, selectedBlock)) {
         for (let i = 0; i < selectedBlock.length; i++) {
             for (let j = 0; j < selectedBlock[0].length; j++) {
@@ -113,7 +107,6 @@ function clearPreviews() {
 
 function canPlaceBlock(row, col, block) {
     if (!block) return false;
-
     for (let i = 0; i < block.length; i++) {
         for (let j = 0; j < block[0].length; j++) {
             if (block[i][j]) {
@@ -135,6 +128,7 @@ function checkCanPlaceAnyBlock(block) {
     }
     return false;
 }
+
 function saveScoreToServer() {
     fetch('/save_blockblast_score', {
       method: 'POST',
@@ -142,23 +136,21 @@ function saveScoreToServer() {
       body: JSON.stringify({ score: score }),
     }).catch((err) => console.error('Failed to save Block Blast score:', err));
   }
-  
+
 function checkGameOver() {
     const remainingBlocks = currentBlocks.filter((_, i) => !usedBlocks.has(i));
-  
     for (const blockIndex of remainingBlocks) {
       if (checkCanPlaceAnyBlock(blocks[blockIndex])) {
         return false;
       }
     }
-  
     document.getElementById('game-over').style.display = 'block';
     saveScoreToServer();
     return true;
   }
+
 function tryPlaceBlock(row, col) {
     if (!selectedBlock || usedBlocks.has(selectedBlockIndex)) return;
-
     if (canPlaceBlock(row, col, selectedBlock)) {
         let cellsPlaced = 0;
         for (let i = 0; i < selectedBlock.length; i++) {
@@ -173,21 +165,17 @@ function tryPlaceBlock(row, col) {
                 }
             }
         }
-
         score += cellsPlaced * 10;
         document.getElementById('score').textContent = `Score: ${score}`;
-
         checkLines();
         usedBlocks.add(selectedBlockIndex);
         selectedBlock = null;
         selectedBlockIndex = null;
         clearPreviews();
-
         if (usedBlocks.size === 3) {
             usedBlocks.clear();
             currentBlocks = getRandomBlocks();
         }
-
         createBlockOptions();
     }
 }
@@ -195,21 +183,18 @@ function tryPlaceBlock(row, col) {
 function checkLines() {
     let rowsCleared = 0;
     let colsCleared = 0;
-
     for (let i = 0; i < BOARD_SIZE; i++) {
         if (gameBoard[i].every(cell => cell === 1)) {
             clearRow(i);
             rowsCleared++;
         }
     }
-
     for (let j = 0; j < BOARD_SIZE; j++) {
         if (gameBoard.every(row => row[j] === 1)) {
             clearColumn(j);
             colsCleared++;
         }
     }
-
     if (rowsCleared > 0 || colsCleared > 0) {
         score += (rowsCleared + colsCleared) * 100;
         document.getElementById('score').textContent = `Score: ${score}`;
