@@ -1,10 +1,19 @@
-jackieZ -- 1/2/2024 21:18
+jackieZ -- 1/2/2025 21:18
 - Uploaded design doc pdf
 - Clarified leaderboard for each game
 - Added Team Name/Project Name
 - Updated database chart to reflect new leaderboard system and update component map and site map to be white 
 
-jackieZ -- 1/11/2024 23:20
+christopherL -- 1/9/2025 11:47
+- Outlined Flappy Bird Game
+- Researched how to code Flappy Bird with javascript
+
+christopherL -- 1/10/2025 11:45
+- Started basic block blast research on how to code
+- Outlined the block blast game
+- Started Block Blast Code
+
+jackieZ -- 1/11/2025 23:20
 - Added login/logout/register
 - Added minesweeper page
 - Added navbar
@@ -12,3 +21,34 @@ jackieZ -- 1/11/2024 23:20
 - Fix minesweeper start and win logic
 - Fix confetti for win
 - Added restart game
+
+christopherL -- 1/12/2025 1:05
+- Added Flappy Bird code outline
+- Added Flappy Bird HTML Base
+- Added Flappy Bird base Javascript
+
+christopherL -- 1/13/2025 11:46
+- Worked on Block Blast Javascript
+- Set up basic HTML code
+- Focused on Gameboard/block generation with New Game button
+- Added Random Block Selection
+
+christopherL -- 1/14/2025 11:47
+- Added Block Blast piece moving functionality
+- Added check for complete rows/columns and then eliminated them.
+- Bug Fixes
+
+christopherL -- 1/15/2025 11:47
+- Added Block Blast Loss Condition
+- Added Block Blast Points Tracking
+
+christopherL -- 1/16/2025 00:34
+- Added Block Blast CSS Styling
+
+christopherL -- 1/16/2025 11:47
+- Remove Flappy Bird
+- Reformatted Block Blast to include the nav bar and link properly to the other pages on the site
+- Wrote Python Flask routing and updated other pages to show the link to Block Blast
+
+christopherL -- 1/17/2025 00:20
+- Added more blocks to Block Blast
