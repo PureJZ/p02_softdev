@@ -193,6 +193,117 @@ def get_minesweeper_leaderboard():
 
     return {"leaderboard": [dict(row) for row in leaderboard]}
 
+@app.route('/save_wordhunt_score', methods=['POST'])
+def save_wordhunt_score():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+    score = request.json.get('score')
+
+    if score is None:
+        return {"error": "Score is required"}, 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO wordhunt_scores (user_id, score) VALUES (?, ?)', (user_id, score))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Word Hunt score saved successfully"}, 200
+
+
+@app.route('/get_wordhunt_leaderboard', methods=['GET'])
+def get_wordhunt_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, MAX(w.score) AS high_score
+        FROM wordhunt_scores w
+        JOIN users u ON w.user_id = u.id
+        GROUP BY w.user_id
+        ORDER BY high_score DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return jsonify({"leaderboard": [dict(row) for row in leaderboard]}), 200
+
+
+
+@app.route('/save_blockblast_score', methods=['POST'])
+def save_blockblast_score():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+    score = request.json.get('score')
+
+    if score is None:
+        return {"error": "Score is required"}, 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO blockblast_scores (user_id, score) VALUES (?, ?)', (user_id, score))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Block Blast score saved successfully"}, 200
+
+
+@app.route('/get_blockblast_leaderboard', methods=['GET'])
+def get_blockblast_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, MAX(b.score) AS high_score
+        FROM blockblast_scores b
+        JOIN users u ON b.user_id = u.id
+        GROUP BY b.user_id
+        ORDER BY high_score DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return {"leaderboard": [dict(row) for row in leaderboard]}, 200
+
+
+@app.route('/increment_wordle_wins', methods=['POST'])
+def increment_wordle_wins():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO wordle_wins (user_id) VALUES (?)', (user_id,))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Win recorded successfully"}, 200
+
+@app.route('/get_wordle_leaderboard', methods=['GET'])
+def get_wordle_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, COUNT(w.id) AS wins
+        FROM wordle_wins w
+        JOIN users u ON w.user_id = u.id
+        GROUP BY w.user_id
+        ORDER BY wins DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return jsonify({"leaderboard": [dict(row) for row in leaderboard]}), 200
+
+
+
 @app.route('/leaderboard')
 def leaderboard():
     """Render the leaderboard selection page."""

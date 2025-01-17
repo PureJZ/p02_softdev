@@ -135,19 +135,27 @@ function checkCanPlaceAnyBlock(block) {
     }
     return false;
 }
-
+function saveScoreToServer() {
+    fetch('/save_blockblast_score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: score }),
+    }).catch((err) => console.error('Failed to save Block Blast score:', err));
+  }
+  
 function checkGameOver() {
     const remainingBlocks = currentBlocks.filter((_, i) => !usedBlocks.has(i));
-
+  
     for (const blockIndex of remainingBlocks) {
-        if (!checkCanPlaceAnyBlock(blocks[blockIndex])) {
-            document.getElementById('game-over').style.display = 'block';
-            return true;
-        }
+      if (checkCanPlaceAnyBlock(blocks[blockIndex])) {
+        return false;
+      }
     }
-    return false;
-}
-
+  
+    document.getElementById('game-over').style.display = 'block';
+    saveScoreToServer();
+    return true;
+  }
 function tryPlaceBlock(row, col) {
     if (!selectedBlock || usedBlocks.has(selectedBlockIndex)) return;
 
