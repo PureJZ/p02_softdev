@@ -1,8 +1,8 @@
 # Romeloquan by Prize Picks
 ## Roster
-* Jackie Zeng - PM, flask routing, db lead, minesweeper, snake, word hunt 
-* Wen Yuan Zhang - User Auth, connect 4, Front-end
-* Christopher Louie - Flappy bird, Block blast
+* Jackie Zeng - PM, flask routing, db lead, minesweeper, snake
+* Wen Yuan Zhang - User Auth, Front-end
+* Christopher Louie -  Front-end, Block blast
 * Raymond Lin - User Auth, Word hunt, Front-end
 
 ## App Description
@@ -12,9 +12,8 @@ Our website will be an online gaming site where users can:
     * Minesweeper
     * Snake
     * Word Hunt
-    * Flappy bird
     * Blockblast
-    * Connect 4
+    * Wordle
 
 We wiil create an engaging experience that utilizes Flask, a simple user account system with a collection system, and Tailwind for our front end framework. 
 
