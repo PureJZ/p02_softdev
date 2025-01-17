@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", () => {
     initializeBoard();
     renderBoard();
-    resetGameMessage();
   });
 });
 
@@ -287,6 +286,5 @@ document.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", () => {
     initializeBoard();
     renderBoard();
-    resetGameMessage();
   });
 });

@@ -32,7 +32,7 @@
       }
     </style>
   </head>
-  <div id="timer">Time left: 60s</div>
+  
   <body class="bg-gray-100">
     <nav class="bg-white shadow p-4 mb-4 w-full">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
@@ -91,9 +91,15 @@
         >
           New Game
         </button>
+
+        <div id = "points" class = "px-6 text-xl">
+          Points: 0
+        </div>
       </div>
+      <div id="timer">Time left: 60s</div>
       <div id="gameBoard"></div>
       <div id="gameMessage" class="text-center text-red-500 font-semibold mt-4"></div>
+      <div id ="word" class = "bg-gray-100 p-4 rounded shadow-innter text-xl">   </div>
       <h3 class="text-xl font-bold mt-6">Found Words</h3>
       <div id="foundWords" class="bg-gray-100 p-4 rounded shadow-inner"></div>
     </div>
