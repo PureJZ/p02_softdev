@@ -230,6 +230,42 @@ def get_wordhunt_leaderboard():
 
     return {"leaderboard": [dict(row) for row in leaderboard]}, 200
 
+@app.route('/save_blockblast_score', methods=['POST'])
+def save_blockblast_score():
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    user_id = session['user_id']
+    score = request.json.get('score')
+
+    if score is None:
+        return {"error": "Score is required"}, 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO blockblast_scores (user_id, score) VALUES (?, ?)', (user_id, score))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Block Blast score saved successfully"}, 200
+
+
+@app.route('/get_blockblast_leaderboard', methods=['GET'])
+def get_blockblast_leaderboard():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT u.username, MAX(b.score) AS high_score
+        FROM blockblast_scores b
+        JOIN users u ON b.user_id = u.id
+        GROUP BY b.user_id
+        ORDER BY high_score DESC
+        LIMIT 10
+    ''')
+    leaderboard = cur.fetchall()
+    conn.close()
+
+    return {"leaderboard": [dict(row) for row in leaderboard]}, 200
 
 
 @app.route('/leaderboard')

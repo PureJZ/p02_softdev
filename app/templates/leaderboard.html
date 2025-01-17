@@ -20,6 +20,7 @@
           <a href="{{ url_for('minesweeper') }}" class="text-gray-700 hover:text-gray-900 underline">Minesweeper</a>
           <a href="{{ url_for('wordhunt') }}" class="text-gray-700 hover:text-gray-900 underline">Word Hunt</a>
           <a href="{{ url_for('snake') }}" class="text-gray-700 hover:text-gray-900 underline">Snake</a>
+          <a href="{{ url_for('blockblast') }}" class="text-gray-700 hover:text-gray-900 underline">Block Blast</a>
           <a href="{{ url_for('leaderboard') }}" class="text-gray-700 hover:text-gray-900 underline">Leaderboard</a>
         </div>
       </div>
@@ -33,6 +34,7 @@
         <button id="snakeBtn" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 font-semibold">Snake</button>
         <button id="minesweeperBtn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold">Minesweeper</button>
         <button id="wordhuntBtn" class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 font-semibold">Word Hunt</button>
+        <button id="blockblastBtn" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 font-semibold">Block Blast</button>
       </div>
 
       <div id="leaderboard" class="bg-gray-100 p-4 rounded shadow-inner">
@@ -47,12 +49,14 @@
       document.getElementById('snakeBtn').addEventListener('click', () => fetchLeaderboard('snake'));
       document.getElementById('minesweeperBtn').addEventListener('click', () => fetchLeaderboard('minesweeper'));
       document.getElementById('wordhuntBtn').addEventListener('click', () => fetchLeaderboard('wordhunt'));
+      document.getElementById('blockblastBtn').addEventListener('click', () => fetchLeaderboard('blockblast'));
 
       async function fetchLeaderboard(game) {
         const endpointMap = {
           snake: '/get_snake_leaderboard',
           minesweeper: '/get_minesweeper_leaderboard',
-          wordhunt: '/get_wordhunt_leaderboard'
+          wordhunt: '/get_wordhunt_leaderboard',
+          blockblast: '/get_blockblast_leaderboard'
         };
 
         try {
@@ -68,11 +72,7 @@
           if (data.leaderboard && data.leaderboard.length > 0) {
             data.leaderboard.forEach((entry, index) => {
               const listItem = document.createElement('li');
-              if (game === 'snake' || game === 'wordhunt') {
-                listItem.textContent = `${index + 1}. ${entry.username} - ${entry.high_score || entry.max_score}`;
-              } else if (game === 'minesweeper') {
-                listItem.textContent = `${index + 1}. ${entry.username} - ${entry.best_time} seconds`;
-              }
+              listItem.textContent = `${index + 1}. ${entry.username} - ${entry.high_score || entry.best_time}`;
               leaderboardList.appendChild(listItem);
             });
           } else {
