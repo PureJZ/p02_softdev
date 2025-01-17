@@ -218,17 +218,19 @@ def get_wordhunt_leaderboard():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
-        SELECT u.username, MAX(w.score) AS max_score
+        SELECT u.username, MAX(w.score) AS high_score
         FROM wordhunt_scores w
         JOIN users u ON w.user_id = u.id
         GROUP BY w.user_id
-        ORDER BY max_score DESC
+        ORDER BY high_score DESC
         LIMIT 10
     ''')
     leaderboard = cur.fetchall()
     conn.close()
 
-    return {"leaderboard": [dict(row) for row in leaderboard]}, 200
+    return jsonify({"leaderboard": [dict(row) for row in leaderboard]}), 200
+
+
 
 @app.route('/save_blockblast_score', methods=['POST'])
 def save_blockblast_score():

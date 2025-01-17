@@ -36,7 +36,7 @@
         <button id="minesweeperBtn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold">Minesweeper</button>
         <button id="wordhuntBtn" class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 font-semibold">Word Hunt</button>
         <button id="blockblastBtn" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 font-semibold">Block Blast</button>
-        <button id="wordleBtn" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 font-semibold">Wordle</button>
+        <button id="wordleBtn" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 font-semibold">Wordle Wins</button>
       </div>
 
       <div id="leaderboard" class="bg-gray-100 p-4 rounded shadow-inner">
@@ -62,7 +62,7 @@
           minesweeper: '/get_minesweeper_leaderboard',
           wordhunt: '/get_wordhunt_leaderboard',
           blockblast: '/get_blockblast_leaderboard',
-          wordle: '/get_wordle_leaderboard' // Ensure this matches the backend route
+          wordle: '/get_wordle_leaderboard' // Wordle leaderboard for wins
         };
 
         try {
@@ -78,7 +78,13 @@
           if (data.leaderboard && data.leaderboard.length > 0) {
             data.leaderboard.forEach((entry, index) => {
               const listItem = document.createElement('li');
-              listItem.textContent = `${index + 1}. ${entry.username} - ${entry.wins || entry.high_score || entry.best_time}`;
+              if (game === 'minesweeper') {
+                listItem.textContent = `${index + 1}. ${entry.username} - Best Time: ${entry.best_time}s`;
+              } else if (game === 'wordhunt' || game === 'blockblast' || game === 'snake') {
+                listItem.textContent = `${index + 1}. ${entry.username} - High Score: ${entry.high_score}`;
+              } else if (game === 'wordle') {
+                listItem.textContent = `${index + 1}. ${entry.username} - Wins: ${entry.wins}`;
+              }
               leaderboardList.appendChild(listItem);
             });
           } else {
