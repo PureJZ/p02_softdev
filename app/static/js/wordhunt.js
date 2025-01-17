@@ -76,10 +76,9 @@ async function checkWord() {
   if (isValid && !foundWords.includes(selectedWord)) {
     foundWords.push(selectedWord);
     updateFoundWords();
-    gameMessage.textContent = "Good job! Word found.";
-    
     totalPoints += selectedWord.length; 
-    pointsMessage.textContent = `Points: ${totalPoints}`; z
+    pointsMessage.textContent = `Points: ${totalPoints}`;
+    gameMessage.textContent = "Good job! Word found.";
   } else {
     gameMessage.textContent = "Not a valid word. Try again!";
   }
