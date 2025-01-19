@@ -36,6 +36,12 @@ raymondL -- 1/13/2025 18:40
 - Tried using a wordlist using a words.txt file
 - Didn't work, so implemented use of APIs
 
+jackieZ -- 1/13/2025 18:45
+- Wrote snake js and html
+- Fixed navbars
+- Added leaderboard
+- Fix db setup to have leaderboard
+
 wenZ -- 1/13/2025 17:50
 - Cleaned up code in minesweeper and snake game
 
